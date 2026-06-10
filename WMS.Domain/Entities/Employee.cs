@@ -32,4 +32,5 @@ public class Employee
     public Department? Department { get; set; }
 
     public Role? Role { get; set; }
+    public UserLogin? UserLogin { get; set; }
 }

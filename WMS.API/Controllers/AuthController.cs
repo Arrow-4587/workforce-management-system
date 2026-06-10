@@ -38,4 +38,29 @@ public class AuthController : ControllerBase
             Role = User.FindFirst(ClaimTypes.Role)?.Value
         });
     }
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult>
+    ChangePassword(
+        ChangePasswordDto dto)
+    {
+        var userIdClaim =
+            User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int userId =
+            int.Parse(
+                userIdClaim.Value);
+
+        await _authService
+            .ChangePasswordAsync(
+                userId,
+                dto);
+
+        return Ok(
+            "Password changed successfully.");
+    }
 }

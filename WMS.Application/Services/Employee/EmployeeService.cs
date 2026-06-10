@@ -1,6 +1,8 @@
 ﻿using WMS.Application.DTOs.Employee;
 using WMS.Domain.Interfaces;
 using EmployeeEntity = WMS.Domain.Entities.Employee;
+//using Microsoft.Extensions.Configuration;
+using WMS.Domain.Entities;
 
 namespace WMS.Application.Services.Employee;
 
@@ -9,15 +11,23 @@ public class EmployeeService : IEmployeeService
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly IAuthRepository
+    _authRepository;
+
+    //private readonly IConfiguration
+    //    _configuration;
 
     public EmployeeService(
-        IEmployeeRepository employeeRepository,
-        IDepartmentRepository departmentRepository,
-        IRoleRepository roleRepository)
+       IEmployeeRepository employeeRepository,
+       IDepartmentRepository departmentRepository,
+       IRoleRepository roleRepository,
+       IAuthRepository authRepository)
     {
         _employeeRepository = employeeRepository;
         _departmentRepository = departmentRepository;
         _roleRepository = roleRepository;
+        _authRepository = authRepository;
+        //_configuration = configuration;
     }
 
     private static EmployeeResponseDto Map(EmployeeEntity employee)
@@ -114,6 +124,38 @@ public class EmployeeService : IEmployeeService
         };
 
         await _employeeRepository.AddAsync(employee);
+        var username = dto.Email;
+
+        bool usernameExists =
+            await _authRepository
+                .UsernameExistsAsync(username);
+
+        if (usernameExists)
+        {
+            throw new Exception(
+                "Username already exists.");
+        }
+
+        const string defaultPassword =
+            "WMS@Start2026!";
+
+        var userLogin = new UserLogin
+        {
+            EmployeeId = employee.EmployeeId,
+
+            Username = username,
+
+            PasswordHash =
+                BCrypt.Net.BCrypt.HashPassword(
+                    defaultPassword),
+
+            RoleId = employee.RoleId,
+
+            IsFirstLogin = true
+        };
+
+        await _authRepository
+            .AddAsync(userLogin);
 
         return Map(employee);
     }
@@ -233,5 +275,16 @@ await _employeeRepository
         return employees
             .Select(Map)
             .ToList();
+    }
+    public async Task<EmployeeResponseDto?>
+    GetMyProfileAsync(int userId)
+    {
+        var employee =
+            await _employeeRepository
+                .GetByUserIdAsync(userId);
+
+        return employee == null
+            ? null
+            : Map(employee);
     }
 }

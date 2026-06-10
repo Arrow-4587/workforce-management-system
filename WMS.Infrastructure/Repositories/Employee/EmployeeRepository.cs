@@ -103,4 +103,15 @@ public class EmployeeRepository : IEmployeeRepository
             .AnyAsync(e =>
                 e.DepartmentId == departmentId);
     }
+    public async Task<Employee?>
+    GetByUserIdAsync(int userId)
+    {
+        return await _context.Employees
+            .Include(e => e.Department)
+            .Include(e => e.Role)
+            .Include(e => e.UserLogin)
+            .FirstOrDefaultAsync(
+                e => e.UserLogin != null &&
+                     e.UserLogin.UserId == userId);
+    }
 }

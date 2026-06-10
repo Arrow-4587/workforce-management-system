@@ -19,4 +19,6 @@ public interface IEmployeeService
     Task<List<EmployeeResponseDto>> GetByDepartmentAsync(int departmentId);
 
     Task<List<EmployeeResponseDto>> GetByRoleAsync(int roleId);
+    Task<EmployeeResponseDto?>
+    GetMyProfileAsync(int userId);
 }

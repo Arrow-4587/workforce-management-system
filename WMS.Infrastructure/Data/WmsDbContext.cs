@@ -70,7 +70,12 @@ public class WmsDbContext : DbContext
         CreatedOn = new DateTime(2026, 1, 1)
     }
 );
-//-------------------------------------------------------------------//
+        //-------------------------------------------------------------------//
+        modelBuilder.Entity<UserLogin>()
+            .HasOne(u => u.Employee)
+            .WithOne(e => e.UserLogin)
+            .HasForeignKey<UserLogin>(
+                u => u.EmployeeId);
     }
 
 }

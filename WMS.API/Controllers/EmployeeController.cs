@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WMS.Application.DTOs.Employee;
 using WMS.Application.Services.Employee;
+
 
 namespace WMS.API.Controllers;
 
@@ -97,6 +99,31 @@ public class EmployeeController : ControllerBase
                 .GetByRoleAsync(roleId);
 
         return Ok(result);
+    }
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult>
+    GetMyProfile()
+    {
+        var userIdClaim =
+            User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+        if (userIdClaim == null)
+            return Unauthorized();
+
+        int userId =
+            int.Parse(userIdClaim.Value);
+
+        var employee =
+            await _employeeService
+                .GetMyProfileAsync(userId);
+
+        if (employee == null)
+            return NotFound(
+                "No employee mapping found.");
+
+        return Ok(employee);
     }
 }
 

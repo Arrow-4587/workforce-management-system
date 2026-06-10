@@ -16,7 +16,7 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public string GenerateToken(int userId, string username, string role)
+    public string GenerateToken(int userId, int? employeeId, string username, string role)
     {
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(
@@ -26,12 +26,28 @@ public class JwtService : IJwtService
             key,
             SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
+{
+    new Claim(
+        ClaimTypes.NameIdentifier,
+        userId.ToString()),
+
+    new Claim(
+        ClaimTypes.Name,
+        username),
+
+    new Claim(
+        ClaimTypes.Role,
+        role)
+};
+
+        if (employeeId.HasValue)
         {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, role)
-        };
+            claims.Add(
+                new Claim(
+                    "EmployeeId",
+                    employeeId.Value.ToString()));
+        }
 
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
