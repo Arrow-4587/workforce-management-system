@@ -5,10 +5,14 @@ using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WMS.Application.Services.Auth;
+using WMS.Application.Services.Employee;
 using WMS.Application.Services.JWT;
 using WMS.Domain.Interfaces;
 using WMS.Infrastructure.Data;
+using WMS.Infrastructure.Repositories;
 using WMS.Infrastructure.Repositories.Auth;
+using WMS.Infrastructure.Repositories.Department;
+using WMS.Infrastructure.Repositories.Role;
 using WMS.Infrastructure.Services.JWT;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +22,11 @@ builder.Services.AddDbContext<WmsDbContext>(options =>
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

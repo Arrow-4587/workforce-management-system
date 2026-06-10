@@ -13,10 +13,14 @@ public class WmsDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
 
     public DbSet<UserLogin> UserLogins { get; set; }
+    public DbSet<Department> Departments { get; set; }
+
+    public DbSet<Employee> Employees { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+//--------------------------------------------------------------------//
         modelBuilder.Entity<Role>()
     .HasKey(r => r.RoleId);
 
@@ -42,5 +46,31 @@ public class WmsDbContext : DbContext
            Description = "Regular employee"
        }
        );
+//-------------------------------------------------------------------//
+        modelBuilder.Entity<Department>().HasData(
+    new Department
+    {
+        DepartmentId = 1,
+        DepartmentName = "IT",
+        Description = "Information Technology",
+        CreatedOn = new DateTime(2026, 1, 1)
+    },
+    new Department
+    {
+        DepartmentId = 2,
+        DepartmentName = "HR",
+        Description = "Human Resources",
+        CreatedOn = new DateTime(2026, 1, 1)
+    },
+    new Department
+    {
+        DepartmentId = 3,
+        DepartmentName = "Finance",
+        Description = "Finance Department",
+        CreatedOn = new DateTime(2026, 1, 1)
     }
+);
+//-------------------------------------------------------------------//
+    }
+
 }

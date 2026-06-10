@@ -7,4 +7,6 @@ public class Role
     public string RoleName { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
+    public ICollection<Employee> Employees { get; set; }
+    = new List<Employee>();
 }

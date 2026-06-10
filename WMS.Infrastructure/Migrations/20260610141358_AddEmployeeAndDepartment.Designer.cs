@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMS.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using WMS.Infrastructure.Data;
 namespace WMS.Infrastructure.Migrations
 {
     [DbContext(typeof(WmsDbContext))]
-    partial class WmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610141358_AddEmployeeAndDepartment")]
+    partial class AddEmployeeAndDepartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,29 +46,6 @@ namespace WMS.Infrastructure.Migrations
                     b.HasKey("DepartmentId");
 
                     b.ToTable("Departments");
-
-                    b.HasData(
-                        new
-                        {
-                            DepartmentId = 1,
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentName = "IT",
-                            Description = "Information Technology"
-                        },
-                        new
-                        {
-                            DepartmentId = 2,
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentName = "HR",
-                            Description = "Human Resources"
-                        },
-                        new
-                        {
-                            DepartmentId = 3,
-                            CreatedOn = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DepartmentName = "Finance",
-                            Description = "Finance Department"
-                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Entities.Employee", b =>
