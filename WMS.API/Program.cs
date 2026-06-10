@@ -1,4 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using WMS.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<WmsDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 
