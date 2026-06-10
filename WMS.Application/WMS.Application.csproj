@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Department\" />
+    <Folder Include="Services\Department\" />
     <Folder Include="Validation\Auth\" />
   </ItemGroup>
 

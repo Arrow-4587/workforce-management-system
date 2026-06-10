@@ -95,4 +95,12 @@ public class EmployeeRepository : IEmployeeRepository
                 e.Email == email &&
                 e.EmployeeId != employeeId);
     }
+    public async Task<bool>
+    DepartmentHasEmployeesAsync(
+        int departmentId)
+    {
+        return await _context.Employees
+            .AnyAsync(e =>
+                e.DepartmentId == departmentId);
+    }
 }

@@ -23,4 +23,6 @@ public interface IEmployeeRepository
 
     Task<List<Employee>> GetByRoleAsync(int roleId);
     Task<bool> EmailExistsAsync(string email, int employeeId);
+    Task<bool> DepartmentHasEmployeesAsync(
+    int departmentId);
 }

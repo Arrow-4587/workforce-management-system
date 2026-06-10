@@ -14,6 +14,8 @@ using WMS.Infrastructure.Repositories.Auth;
 using WMS.Infrastructure.Repositories.Department;
 using WMS.Infrastructure.Repositories.Role;
 using WMS.Infrastructure.Services.JWT;
+using WMS.Application.Services.Department;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<WmsDbContext>(options =>
@@ -24,6 +26,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
