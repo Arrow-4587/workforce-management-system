@@ -27,4 +27,7 @@ public interface ILeaveService
     Task RejectLeaveAsync(
         int leaveId,
         int managerId);
+        Task<List<LeaveResponseDto>>
+    GetPendingLeavesForManagerAsync(
+        int managerId);
 }

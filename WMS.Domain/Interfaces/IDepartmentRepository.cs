@@ -19,4 +19,6 @@ public interface IDepartmentRepository
     Task<bool> ExistsAsync(int departmentId);
     Task<List<Department>>
     SearchByNameAsync(string name);
+
+    Task<int> GetTotalCountAsync();
 }

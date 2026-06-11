@@ -69,17 +69,26 @@ public class LeaveController : ControllerBase
         return Ok(result);
     }
 
-    [Authorize(Roles = "Admin,Manager")]
-    [HttpGet("pending")]
-    public async Task<IActionResult>
-        GetPendingLeaves()
+[Authorize(Roles = "Admin,Manager")]
+[HttpGet("pending")]
+public async Task<IActionResult>
+    GetPendingLeaves()
+{
+    if (User.IsInRole("Admin"))
     {
-        var result =
+        return Ok(
             await _leaveService
-                .GetPendingLeavesAsync();
-
-        return Ok(result);
+                .GetPendingLeavesAsync());
     }
+
+    int managerId =
+        GetEmployeeId();
+
+    return Ok(
+        await _leaveService
+            .GetPendingLeavesForManagerAsync(
+                managerId));
+}
 
     [Authorize(Roles = "Admin,Manager")]
     [HttpPost("approve/{leaveId}")]

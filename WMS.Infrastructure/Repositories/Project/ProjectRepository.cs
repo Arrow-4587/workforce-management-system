@@ -85,4 +85,10 @@ public class ProjectRepository
                 p.ProjectName)
             .ToListAsync();
     }
+    public async Task<int>
+    GetTotalCountAsync()
+{
+    return await _context.Projects
+        .CountAsync();
+}
 }

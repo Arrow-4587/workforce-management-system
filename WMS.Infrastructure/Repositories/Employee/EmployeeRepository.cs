@@ -123,4 +123,10 @@ public class EmployeeRepository : IEmployeeRepository
                 e.EmployeeId == employeeId &&
                 e.RoleId == 2);
     }
+    public async Task<int>
+    GetTotalCountAsync()
+{
+    return await _context.Employees
+        .CountAsync();
+}
 }

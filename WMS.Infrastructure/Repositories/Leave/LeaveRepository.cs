@@ -66,4 +66,11 @@ public class LeaveRepository
                 l.AppliedOn)
             .ToListAsync();
     }
+    public async Task<int>
+    GetPendingCountAsync()
+{
+    return await _context.Leaves
+        .CountAsync(l =>
+            l.Status == "Pending");
+}
 }

@@ -76,4 +76,24 @@ public class AttendanceRepository
                 a.AttendanceDate)
             .ToListAsync();
     }
+    public async Task<int>
+GetTodayAttendanceCountAsync()
+    {
+        return await _context.Attendances
+            .CountAsync(a =>
+                a.AttendanceDate.Date ==
+                DateTime.Today);
+    }
+    public async Task<int>
+    GetMonthlyAttendanceCountAsync(
+        int employeeId,
+        int year,
+        int month)
+    {
+        return await _context.Attendances
+            .CountAsync(a =>
+                a.EmpId == employeeId &&
+                a.AttendanceDate.Year == year &&
+                a.AttendanceDate.Month == month);
+    }
 }

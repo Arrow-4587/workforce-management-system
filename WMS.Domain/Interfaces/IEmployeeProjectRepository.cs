@@ -30,4 +30,7 @@ public interface IEmployeeProjectRepository
     IsEmployeeUnderManagerAsync(
         int employeeId,
         int managerId);
+        Task<List<int>>
+    GetEmployeeIdsByManagerAsync(
+        int managerId);
 }

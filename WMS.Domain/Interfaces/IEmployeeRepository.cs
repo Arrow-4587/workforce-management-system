@@ -30,4 +30,5 @@ public interface IEmployeeRepository
     int userId);
     Task<bool> IsManagerAsync(
     int employeeId);
+    Task<int> GetTotalCountAsync();
 }

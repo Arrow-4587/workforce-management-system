@@ -23,4 +23,5 @@ public interface IProjectRepository
     Task<List<Project>>
     GetByManagerIdAsync(
         int managerId);
+        Task<int> GetTotalCountAsync();
 }

@@ -92,4 +92,19 @@ public class EmployeeProjectRepository
                 ep.Project != null &&
                 ep.Project.ManagerId == managerId);
     }
+    public async Task<List<int>>
+    GetEmployeeIdsByManagerAsync(
+        int managerId)
+{
+    return await _context.EmployeeProjects
+        .Include(ep => ep.Project)
+        .Where(ep =>
+            ep.ReleasedOn == null &&
+            ep.Project != null &&
+            ep.Project.ManagerId == managerId)
+        .Select(ep =>
+            ep.EmployeeId)
+        .Distinct()
+        .ToListAsync();
+}
 }

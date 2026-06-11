@@ -78,4 +78,10 @@ public class DepartmentRepository : IDepartmentRepository
                 d.DepartmentName)
             .ToListAsync();
     }
+    public async Task<int>
+    GetTotalCountAsync()
+{
+    return await _context.Departments
+        .CountAsync();
+}
 }

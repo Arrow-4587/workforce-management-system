@@ -120,6 +120,27 @@ public class LeaveService
             .ToList();
     }
 
+public async Task<
+    List<LeaveResponseDto>>
+    GetPendingLeavesForManagerAsync(
+        int managerId)
+{
+    var employeeIds =
+        await _employeeProjectRepository
+            .GetEmployeeIdsByManagerAsync(
+                managerId);
+
+    var pendingLeaves =
+        await _leaveRepository
+            .GetPendingLeavesAsync();
+
+    return pendingLeaves
+        .Where(l =>
+            employeeIds.Contains(
+                l.EmpId))
+        .Select(Map)
+        .ToList();
+}
     public async Task ApproveLeaveAsync(
         int leaveId,
         int managerId)

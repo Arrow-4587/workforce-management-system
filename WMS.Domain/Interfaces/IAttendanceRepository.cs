@@ -22,4 +22,11 @@ public interface IAttendanceRepository
         int year,
         int month);
 
+        Task<int> GetTodayAttendanceCountAsync();
+
+Task<int> GetMonthlyAttendanceCountAsync(
+    int employeeId,
+    int year,
+    int month);
+
 }
