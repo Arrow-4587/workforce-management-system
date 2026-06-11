@@ -42,6 +42,12 @@ public class WmsDbContext : DbContext
         get;
         set;
     }
+    public DbSet<Announcement>
+Announcements
+    {
+        get;
+        set;
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -140,5 +146,11 @@ public class WmsDbContext : DbContext
     .HasOne(ep => ep.Project)
     .WithMany(p => p.EmployeeProjects)
     .HasForeignKey(ep => ep.ProjectId);
+        //------------------------------------------------------------//
+        modelBuilder.Entity<Announcement>()
+    .HasOne(a => a.Creator)
+    .WithMany()
+    .HasForeignKey(a => a.CreatedBy)
+    .OnDelete(DeleteBehavior.Restrict);
     }
 }

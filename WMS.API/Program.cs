@@ -21,6 +21,8 @@ using WMS.Infrastructure.Repositories.Department;
 using WMS.Infrastructure.Repositories.Role;
 using WMS.Application.Services.Dashboard;
 using WMS.Infrastructure.Services.JWT;
+using WMS.Application.Services;
+
 
 
 
@@ -50,6 +52,8 @@ builder.Services.AddScoped<IProjectService,ProjectService>();
 builder.Services.AddScoped<IEmployeeProjectRepository,EmployeeProjectRepository>();
 builder.Services.AddScoped<IAllocationService,AllocationService>();
 builder.Services.AddScoped<IDashboardService,DashboardService>();
+builder.Services.AddScoped<IAnnouncementRepository,AnnouncementRepository>();
+builder.Services.AddScoped<IAnnouncementService,AnnouncementService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
