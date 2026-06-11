@@ -18,7 +18,7 @@ public class EmployeeController : ControllerBase
     {
         _employeeService = employeeService;
     }
-
+    [Authorize(Roles = "Admin,Manager")]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -26,7 +26,7 @@ public class EmployeeController : ControllerBase
 
         return Ok(result);
     }
-
+    [Authorize(Roles = "Admin,Manager")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -68,7 +68,7 @@ public class EmployeeController : ControllerBase
 
         return NoContent();
     }
-
+    [Authorize(Roles = "Admin,Manager")]
     [HttpGet("search")]
     public async Task<IActionResult> SearchByName(
         string name)
@@ -78,7 +78,7 @@ public class EmployeeController : ControllerBase
 
         return Ok(result);
     }
-
+    [Authorize(Roles = "Admin,Manager")]
     [HttpGet("department/{departmentId}")]
     public async Task<IActionResult> GetByDepartment(
         int departmentId)
@@ -89,7 +89,7 @@ public class EmployeeController : ControllerBase
 
         return Ok(result);
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpGet("role/{roleId}")]
     public async Task<IActionResult> GetByRole(
         int roleId)

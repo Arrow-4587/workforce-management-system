@@ -142,19 +142,19 @@ public async Task<IActionResult>
             claim.Value);
     }
 
-    private int GetUserId()
-    {
-        var claim =
-            User.FindFirst(
-                ClaimTypes.NameIdentifier);
+    //private int GetUserId()
+    //{
+    //    var claim =
+    //        User.FindFirst(
+    //            ClaimTypes.NameIdentifier);
 
-        if (claim == null)
-        {
-            throw new Exception(
-                "UserId claim not found.");
-        }
+    //    if (claim == null)
+    //    {
+    //        throw new Exception(
+    //            "UserId claim not found.");
+    //    }
 
-        return int.Parse(
-            claim.Value);
-    }
+    //    return int.Parse(
+    //        claim.Value);
+    //}
 }

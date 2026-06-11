@@ -19,7 +19,7 @@ public class AllocationController : ControllerBase
         _allocationService =
             allocationService;
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult>
         Allocate(
@@ -29,7 +29,7 @@ public class AllocationController : ControllerBase
             await _allocationService
                 .AllocateAsync(dto));
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{allocationId}")]
     public async Task<IActionResult>
         Release(

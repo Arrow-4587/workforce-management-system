@@ -65,8 +65,7 @@ public class LeaveService
 
         await _leaveRepository
             .AddAsync(leave);
-        await _leaveRepository
-    .AddAsync(leave);
+        
 
         await _auditLogRepository
             .AddAsync(
@@ -116,10 +115,7 @@ public class LeaveService
 
         await _leaveRepository
             .UpdateAsync(leave);
-        leave.Status = "Cancelled";
-
-        await _leaveRepository
-            .UpdateAsync(leave);
+       
 
         await _auditLogRepository
             .AddAsync(
@@ -215,13 +211,7 @@ public async Task<
                 "Leave already processed.");
         }
 
-        leave.Status = "Approved";
-        leave.ApprovedBy = managerId;
-        leave.ApprovedOn =
-            DateTime.UtcNow;
-
-        await _leaveRepository
-            .UpdateAsync(leave);
+       
         leave.Status = "Approved";
         leave.ApprovedBy = managerId;
         leave.ApprovedOn =
@@ -275,13 +265,6 @@ public async Task<
                 "Leave already processed.");
         }
 
-        leave.Status = "Rejected";
-        leave.ApprovedBy = managerId;
-        leave.ApprovedOn =
-            DateTime.UtcNow;
-
-        await _leaveRepository
-            .UpdateAsync(leave);
         leave.Status = "Rejected";
         leave.ApprovedBy = managerId;
         leave.ApprovedOn =

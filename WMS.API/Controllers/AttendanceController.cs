@@ -20,7 +20,7 @@ public class AttendanceController : ControllerBase
         _attendanceService =
             attendanceService;
     }
-
+    
     [HttpPost("checkin")]
     public async Task<IActionResult>
         CheckIn(
@@ -37,7 +37,7 @@ public class AttendanceController : ControllerBase
 
         return Ok(result);
     }
-
+    
     [HttpPost("checkout")]
     public async Task<IActionResult>
         CheckOut()

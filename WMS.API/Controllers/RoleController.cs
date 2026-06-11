@@ -7,6 +7,7 @@ namespace WMS.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class RoleController
     : ControllerBase
 {
@@ -21,7 +22,7 @@ public class RoleController
     }
 
     [HttpGet]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult>
         GetAll()
     {
@@ -31,7 +32,7 @@ public class RoleController
     }
 
     [HttpGet("{id}")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult>
         GetById(
             int id)
@@ -42,7 +43,7 @@ public class RoleController
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public async Task<IActionResult>
         Create(
             CreateRoleDto dto)

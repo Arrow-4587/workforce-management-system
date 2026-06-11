@@ -39,7 +39,7 @@ public class ProjectController : ControllerBase
             await _projectService
                 .GetByIdAsync(id));
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult>
         Create(
@@ -49,7 +49,7 @@ public class ProjectController : ControllerBase
             await _projectService
                 .CreateAsync(dto));
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult>
         Update(
@@ -60,7 +60,7 @@ public class ProjectController : ControllerBase
             await _projectService
                 .UpdateAsync(id, dto));
     }
-
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult>
         Delete(
@@ -72,6 +72,8 @@ public class ProjectController : ControllerBase
         return Ok(
             "Project deleted successfully.");
     }
+
+    [Authorize(Roles = "Manager")]
     [HttpGet("my-projects")]
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult>
