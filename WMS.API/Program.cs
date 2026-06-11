@@ -18,7 +18,7 @@ using WMS.Infrastructure.Data;
 using WMS.Infrastructure.Repositories;
 using WMS.Infrastructure.Repositories.Auth;
 using WMS.Infrastructure.Repositories.Department;
-using WMS.Infrastructure.Repositories.Role;
+
 using WMS.Application.Services.Dashboard;
 using WMS.Infrastructure.Services.JWT;
 using WMS.Application.Services;
@@ -61,6 +61,9 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<
     IAuditLogService,
     AuditLogService>();
+builder.Services.AddScoped<
+    IRoleService,
+    RoleService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
