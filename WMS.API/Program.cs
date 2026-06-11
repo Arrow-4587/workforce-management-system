@@ -4,12 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using WMS.Application.Services.Allocation;
 using WMS.Application.Services.Attendance;
 using WMS.Application.Services.Auth;
+using WMS.Application.Services.Client;
 using WMS.Application.Services.Department;
 using WMS.Application.Services.Employee;
 using WMS.Application.Services.JWT;
 using WMS.Application.Services.Leave;
+using WMS.Application.Services.Project;
 using WMS.Domain.Interfaces;
 using WMS.Infrastructure.Data;
 using WMS.Infrastructure.Repositories;
@@ -39,6 +42,12 @@ builder.Services.AddScoped<IAttendanceService,AttendanceService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ILeaveRepository,LeaveRepository>();
 builder.Services.AddScoped<ILeaveService,LeaveService>();
+builder.Services.AddScoped<IClientRepository,ClientRepository>();
+builder.Services.AddScoped<IClientService,ClientService>();
+builder.Services.AddScoped<IProjectRepository,ProjectRepository>();
+builder.Services.AddScoped<IProjectService,ProjectService>();
+builder.Services.AddScoped<IEmployeeProjectRepository,EmployeeProjectRepository>();
+builder.Services.AddScoped<IAllocationService,AllocationService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -28,4 +28,6 @@ public interface IEmployeeRepository
 
     Task<Employee?> GetByUserIdAsync(
     int userId);
+    Task<bool> IsManagerAsync(
+    int employeeId);
 }

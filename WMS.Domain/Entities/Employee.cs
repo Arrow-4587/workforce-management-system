@@ -45,4 +45,12 @@ public class Employee
         set;
     }
 = new List<Leave>();
+
+    public ICollection<EmployeeProject>
+    EmployeeProjects
+    {
+        get;
+        set;
+    }
+= new List<EmployeeProject>();
 }

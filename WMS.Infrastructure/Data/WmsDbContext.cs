@@ -26,7 +26,22 @@ public class WmsDbContext : DbContext
         get;
         set;
     }
-
+    public DbSet<Client> Clients
+    {
+        get;
+        set;
+    }
+    public DbSet<Project> Projects
+    {
+        get;
+        set;
+    }
+    public DbSet<EmployeeProject>
+    EmployeeProjects
+    {
+        get;
+        set;
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -98,6 +113,32 @@ public class WmsDbContext : DbContext
         .HasOne(l => l.Employee)
         .WithMany(e => e.Leaves)
         .HasForeignKey(l => l.EmpId);
+        //----------------------------------------------------------------//
+        modelBuilder.Entity<Project>()
+    .HasOne(p => p.Client)
+    .WithMany(c => c.Projects)
+    .HasForeignKey(p => p.ClientId);
+        //--------------------------------//
+        modelBuilder.Entity<Project>()
+    .HasOne(p => p.Manager)
+    .WithMany()
+    .HasForeignKey(p => p.ManagerId)
+    .OnDelete(DeleteBehavior.Restrict);
 
+        //------------------------------------------------------------//
+
+        modelBuilder.Entity<EmployeeProject>()
+    .HasKey(ep => ep.AllocationId);
+
+        //---------------------------------------------------------//
+        modelBuilder.Entity<EmployeeProject>()
+        .HasOne(ep => ep.Employee)
+        .WithMany(e => e.EmployeeProjects)
+        .HasForeignKey(ep => ep.EmployeeId);
+        //------------------------------------------------------------//
+        modelBuilder.Entity<EmployeeProject>()
+    .HasOne(ep => ep.Project)
+    .WithMany(p => p.EmployeeProjects)
+    .HasForeignKey(ep => ep.ProjectId);
     }
 }

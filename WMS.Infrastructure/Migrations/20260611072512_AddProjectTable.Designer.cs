@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMS.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using WMS.Infrastructure.Data;
 namespace WMS.Infrastructure.Migrations
 {
     [DbContext(typeof(WmsDbContext))]
-    partial class WmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260611072512_AddProjectTable")]
+    partial class AddProjectTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,35 +191,6 @@ namespace WMS.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("WMS.Domain.Entities.EmployeeProject", b =>
-                {
-                    b.Property<int>("AllocationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AllocationId"));
-
-                    b.Property<DateTime>("AllocatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ReleasedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("AllocationId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("EmployeeProjects");
                 });
 
             modelBuilder.Entity("WMS.Domain.Entities.Leave", b =>
@@ -410,25 +384,6 @@ namespace WMS.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("WMS.Domain.Entities.EmployeeProject", b =>
-                {
-                    b.HasOne("WMS.Domain.Entities.Employee", "Employee")
-                        .WithMany("EmployeeProjects")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WMS.Domain.Entities.Project", "Project")
-                        .WithMany("EmployeeProjects")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Project");
-                });
-
             modelBuilder.Entity("WMS.Domain.Entities.Leave", b =>
                 {
                     b.HasOne("WMS.Domain.Entities.Employee", "Employee")
@@ -490,16 +445,9 @@ namespace WMS.Infrastructure.Migrations
                 {
                     b.Navigation("Attendances");
 
-                    b.Navigation("EmployeeProjects");
-
                     b.Navigation("Leaves");
 
                     b.Navigation("UserLogin");
-                });
-
-            modelBuilder.Entity("WMS.Domain.Entities.Project", b =>
-                {
-                    b.Navigation("EmployeeProjects");
                 });
 
             modelBuilder.Entity("WMS.Domain.Entities.Role", b =>

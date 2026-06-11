@@ -11,11 +11,17 @@ public class LeaveService
     private readonly ILeaveRepository
         _leaveRepository;
 
+    private readonly IEmployeeProjectRepository
+    _employeeProjectRepository;
     public LeaveService(
-        ILeaveRepository leaveRepository)
+      ILeaveRepository leaveRepository,
+      IEmployeeProjectRepository employeeProjectRepository)
     {
         _leaveRepository =
             leaveRepository;
+
+        _employeeProjectRepository =
+            employeeProjectRepository;
     }
 
     public async Task<LeaveResponseDto>
@@ -127,6 +133,17 @@ public class LeaveService
             throw new Exception(
                 "Leave not found.");
         }
+        bool canApprove =
+    await _employeeProjectRepository
+        .IsEmployeeUnderManagerAsync(
+            leave.EmpId,
+            managerId);
+
+        if (!canApprove)
+        {
+            throw new Exception(
+                "You are not authorized to approve this employee's leave.");
+        }
 
         if (leave.Status != "Pending")
         {
@@ -155,6 +172,17 @@ public class LeaveService
         {
             throw new Exception(
                 "Leave not found.");
+        }
+        bool canApprove =
+    await _employeeProjectRepository
+        .IsEmployeeUnderManagerAsync(
+            leave.EmpId,
+            managerId);
+
+        if (!canApprove)
+        {
+            throw new Exception(
+                "You are not authorized to reject this employee's leave.");
         }
 
         if (leave.Status != "Pending")

@@ -88,7 +88,7 @@ public class LeaveController : ControllerBase
             int leaveId)
     {
         int managerId =
-            GetUserId();
+    GetEmployeeId();
 
         await _leaveService
             .ApproveLeaveAsync(
@@ -106,7 +106,7 @@ public class LeaveController : ControllerBase
             int leaveId)
     {
         int managerId =
-            GetUserId();
+    GetEmployeeId();
 
         await _leaveService
             .RejectLeaveAsync(

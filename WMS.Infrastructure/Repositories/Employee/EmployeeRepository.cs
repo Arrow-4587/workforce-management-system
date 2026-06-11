@@ -114,4 +114,13 @@ public class EmployeeRepository : IEmployeeRepository
                 e => e.UserLogin != null &&
                      e.UserLogin.UserId == userId);
     }
+    public async Task<bool>
+    IsManagerAsync(
+        int employeeId)
+    {
+        return await _context.Employees
+            .AnyAsync(e =>
+                e.EmployeeId == employeeId &&
+                e.RoleId == 2);
+    }
 }
