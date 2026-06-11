@@ -4,7 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using WMS.Application.Services.Attendance;
 using WMS.Application.Services.Auth;
+using WMS.Application.Services.Department;
 using WMS.Application.Services.Employee;
 using WMS.Application.Services.JWT;
 using WMS.Domain.Interfaces;
@@ -14,7 +16,7 @@ using WMS.Infrastructure.Repositories.Auth;
 using WMS.Infrastructure.Repositories.Department;
 using WMS.Infrastructure.Repositories.Role;
 using WMS.Infrastructure.Services.JWT;
-using WMS.Application.Services.Department;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,9 +29,11 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IAttendanceRepository,AttendanceRepository>();
 
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IAttendanceService,AttendanceService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 

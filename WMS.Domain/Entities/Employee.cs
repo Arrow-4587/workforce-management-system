@@ -33,4 +33,10 @@ public class Employee
 
     public Role? Role { get; set; }
     public UserLogin? UserLogin { get; set; }
+    public ICollection<Attendance> Attendances
+    {
+        get;
+        set;
+    }
+    = new List<Attendance>();
 }

@@ -16,6 +16,11 @@ public class WmsDbContext : DbContext
     public DbSet<Department> Departments { get; set; }
 
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Attendance> Attendances
+    {
+        get;
+        set;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,6 +81,12 @@ public class WmsDbContext : DbContext
             .WithOne(e => e.UserLogin)
             .HasForeignKey<UserLogin>(
                 u => u.EmployeeId);
+
+        //-------------------------------------------------------------------//
+        modelBuilder.Entity<Attendance>()
+    .HasOne(a => a.Employee)
+    .WithMany(e => e.Attendances)
+    .HasForeignKey(a => a.EmpId);
     }
 
 }
