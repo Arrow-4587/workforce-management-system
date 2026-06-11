@@ -1,4 +1,5 @@
 using WMS.Application.DTOs.Leave;
+using WMS.Domain.Entities;
 using WMS.Domain.Interfaces;
 using LeaveEntity =
     WMS.Domain.Entities.Leave;
@@ -9,19 +10,27 @@ public class LeaveService
     : ILeaveService
 {
     private readonly ILeaveRepository
-        _leaveRepository;
+    _leaveRepository;
 
     private readonly IEmployeeProjectRepository
-    _employeeProjectRepository;
+        _employeeProjectRepository;
+
+    private readonly IAuditLogRepository
+        _auditLogRepository;
+
     public LeaveService(
-      ILeaveRepository leaveRepository,
-      IEmployeeProjectRepository employeeProjectRepository)
+        ILeaveRepository leaveRepository,
+        IEmployeeProjectRepository employeeProjectRepository,
+        IAuditLogRepository auditLogRepository)
     {
         _leaveRepository =
             leaveRepository;
 
         _employeeProjectRepository =
             employeeProjectRepository;
+
+        _auditLogRepository =
+            auditLogRepository;
     }
 
     public async Task<LeaveResponseDto>
@@ -56,8 +65,25 @@ public class LeaveService
 
         await _leaveRepository
             .AddAsync(leave);
+        await _leaveRepository
+    .AddAsync(leave);
+
+        await _auditLogRepository
+            .AddAsync(
+                new AuditLog
+                {
+                    EntityName = "Leave",
+                    RecordId =
+                        leave.LeaveId,
+                    Action = "Apply",
+                    CreatedBy = employeeId,
+                    CreatedOn =
+                        DateTime.UtcNow
+                });
 
         return Map(leave);
+
+        
     }
 
     public async Task CancelLeaveAsync(
@@ -90,6 +116,23 @@ public class LeaveService
 
         await _leaveRepository
             .UpdateAsync(leave);
+        leave.Status = "Cancelled";
+
+        await _leaveRepository
+            .UpdateAsync(leave);
+
+        await _auditLogRepository
+            .AddAsync(
+                new AuditLog
+                {
+                    EntityName = "Leave",
+                    RecordId =
+                        leave.LeaveId,
+                    Action = "Cancelled",
+                    CreatedBy = employeeId,
+                    CreatedOn =
+                        DateTime.UtcNow
+                });
     }
 
     public async Task<
@@ -179,6 +222,26 @@ public async Task<
 
         await _leaveRepository
             .UpdateAsync(leave);
+        leave.Status = "Approved";
+        leave.ApprovedBy = managerId;
+        leave.ApprovedOn =
+            DateTime.UtcNow;
+
+        await _leaveRepository
+            .UpdateAsync(leave);
+
+        await _auditLogRepository
+            .AddAsync(
+                new AuditLog
+                {
+                    EntityName = "Leave",
+                    RecordId =
+                        leave.LeaveId,
+                    Action = "Approved",
+                    CreatedBy = managerId,
+                    CreatedOn =
+                        DateTime.UtcNow
+                });
     }
 
     public async Task RejectLeaveAsync(
@@ -219,6 +282,26 @@ public async Task<
 
         await _leaveRepository
             .UpdateAsync(leave);
+        leave.Status = "Rejected";
+        leave.ApprovedBy = managerId;
+        leave.ApprovedOn =
+            DateTime.UtcNow;
+
+        await _leaveRepository
+            .UpdateAsync(leave);
+
+        await _auditLogRepository
+            .AddAsync(
+                new AuditLog
+                {
+                    EntityName = "Leave",
+                    RecordId =
+                        leave.LeaveId,
+                    Action = "Rejected",
+                    CreatedBy = managerId,
+                    CreatedOn =
+                        DateTime.UtcNow
+                });
     }
 
     private static LeaveResponseDto

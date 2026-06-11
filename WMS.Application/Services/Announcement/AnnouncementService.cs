@@ -9,12 +9,20 @@ public class AnnouncementService
 {
     private readonly IAnnouncementRepository
         _announcementRepository;
+    
+
+    private readonly IAuditLogRepository
+        _auditLogRepository;
 
     public AnnouncementService(
-        IAnnouncementRepository announcementRepository)
+     IAnnouncementRepository announcementRepository,
+     IAuditLogRepository auditLogRepository)
     {
         _announcementRepository =
             announcementRepository;
+
+        _auditLogRepository =
+            auditLogRepository;
     }
 
     public async Task<List<AnnouncementResponseDto>>
@@ -71,6 +79,19 @@ public class AnnouncementService
 
         await _announcementRepository
             .AddAsync(announcement);
+        await _auditLogRepository
+    .AddAsync(
+        new AuditLog
+        {
+            EntityName = "Announcement",
+            RecordId =
+                announcement.AnnouncementId,
+            Action = "Insert",
+            CreatedBy =
+                announcement.CreatedBy,
+            CreatedOn =
+                DateTime.UtcNow
+        });
 
         announcement =
             await _announcementRepository
@@ -107,6 +128,19 @@ public class AnnouncementService
 
         await _announcementRepository
             .UpdateAsync(announcement);
+        await _auditLogRepository
+    .AddAsync(
+        new AuditLog
+        {
+            EntityName = "Announcement",
+            RecordId =
+                announcement.AnnouncementId,
+            Action = "Update",
+            CreatedBy =
+                announcement.CreatedBy,
+            CreatedOn =
+                DateTime.UtcNow
+        });
     }
 
     public async Task DeleteAsync(
@@ -125,6 +159,19 @@ public class AnnouncementService
 
         await _announcementRepository
             .DeleteAsync(announcement);
+        await _auditLogRepository
+    .AddAsync(
+        new AuditLog
+        {
+            EntityName = "Announcement",
+            RecordId =
+                announcement.AnnouncementId,
+            Action = "Delete",
+            CreatedBy =
+                announcement.CreatedBy,
+            CreatedOn =
+                DateTime.UtcNow
+        });
     }
 
     private static AnnouncementResponseDto

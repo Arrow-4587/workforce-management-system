@@ -1,4 +1,5 @@
 using WMS.Application.DTOs.Attendance;
+using WMS.Domain.Entities;
 using WMS.Domain.Interfaces;
 using AttendanceEntity =
     WMS.Domain.Entities.Attendance;
@@ -10,12 +11,18 @@ public class AttendanceService
 {
     private readonly IAttendanceRepository
         _attendanceRepository;
+    private readonly IAuditLogRepository
+    _auditLogRepository;
 
     public AttendanceService(
-        IAttendanceRepository attendanceRepository)
+      IAttendanceRepository attendanceRepository,
+      IAuditLogRepository auditLogRepository)
     {
         _attendanceRepository =
             attendanceRepository;
+
+        _auditLogRepository =
+            auditLogRepository;
     }
 
     public async Task<AttendanceResponseDto>
@@ -58,6 +65,18 @@ public class AttendanceService
 
         await _attendanceRepository
             .AddAsync(attendance);
+        await _auditLogRepository
+    .AddAsync(
+        new AuditLog
+        {
+            EntityName = "Attendance",
+            RecordId =
+                attendance.AttendanceId,
+            Action = "CheckIn",
+            CreatedBy = employeeId,
+            CreatedOn =
+                DateTime.UtcNow
+        });
 
         return Map(attendance);
     }
@@ -93,6 +112,18 @@ public class AttendanceService
 
         await _attendanceRepository
             .UpdateAsync(attendance);
+        await _auditLogRepository
+    .AddAsync(
+        new AuditLog
+        {
+            EntityName = "Attendance",
+            RecordId =
+                attendance.AttendanceId,
+            Action = "CheckOut",
+            CreatedBy = employeeId,
+            CreatedOn =
+                DateTime.UtcNow
+        });
 
         return Map(attendance);
     }

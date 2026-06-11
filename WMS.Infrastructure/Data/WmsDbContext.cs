@@ -48,6 +48,12 @@ Announcements
         get;
         set;
     }
+    public DbSet<AuditLog>
+AuditLogs
+    {
+        get;
+        set;
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -152,5 +158,14 @@ Announcements
     .WithMany()
     .HasForeignKey(a => a.CreatedBy)
     .OnDelete(DeleteBehavior.Restrict);
+        //---------------------------------------------------------------//
+        modelBuilder.Entity<AuditLog>()
+ .HasKey(a => a.AuditId);
+
+        modelBuilder.Entity<AuditLog>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.CreatedBy)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
