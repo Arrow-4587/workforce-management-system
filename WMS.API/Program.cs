@@ -9,6 +9,7 @@ using WMS.Application.Services.Auth;
 using WMS.Application.Services.Department;
 using WMS.Application.Services.Employee;
 using WMS.Application.Services.JWT;
+using WMS.Application.Services.Leave;
 using WMS.Domain.Interfaces;
 using WMS.Infrastructure.Data;
 using WMS.Infrastructure.Repositories;
@@ -16,6 +17,7 @@ using WMS.Infrastructure.Repositories.Auth;
 using WMS.Infrastructure.Repositories.Department;
 using WMS.Infrastructure.Repositories.Role;
 using WMS.Infrastructure.Services.JWT;
+
 
 
 
@@ -34,8 +36,9 @@ builder.Services.AddScoped<IAttendanceRepository,AttendanceRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IAttendanceService,AttendanceService>();
-
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<ILeaveRepository,LeaveRepository>();
+builder.Services.AddScoped<ILeaveService,LeaveService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

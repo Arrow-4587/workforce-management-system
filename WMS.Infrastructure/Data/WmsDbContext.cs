@@ -21,11 +21,16 @@ public class WmsDbContext : DbContext
         get;
         set;
     }
+    public DbSet<Leave> Leaves
+    {
+        get;
+        set;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-//--------------------------------------------------------------------//
+        //--------------------------------------------------------------------//
         modelBuilder.Entity<Role>()
     .HasKey(r => r.RoleId);
 
@@ -51,7 +56,7 @@ public class WmsDbContext : DbContext
            Description = "Regular employee"
        }
        );
-//-------------------------------------------------------------------//
+        //-------------------------------------------------------------------//
         modelBuilder.Entity<Department>().HasData(
     new Department
     {
@@ -87,6 +92,12 @@ public class WmsDbContext : DbContext
     .HasOne(a => a.Employee)
     .WithMany(e => e.Attendances)
     .HasForeignKey(a => a.EmpId);
-    }
 
+        //--------------------------------------------------------------------//
+        modelBuilder.Entity<Leave>()
+        .HasOne(l => l.Employee)
+        .WithMany(e => e.Leaves)
+        .HasForeignKey(l => l.EmpId);
+
+    }
 }

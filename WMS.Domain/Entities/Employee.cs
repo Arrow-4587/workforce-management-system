@@ -39,4 +39,10 @@ public class Employee
         set;
     }
     = new List<Attendance>();
+    public ICollection<Leave> Leaves
+    {
+        get;
+        set;
+    }
+= new List<Leave>();
 }
