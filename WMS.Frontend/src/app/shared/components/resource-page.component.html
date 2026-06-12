@@ -1,0 +1,102 @@
+<section class="resource-page">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Enterprise module</p>
+          <h2>{{ config().title }}</h2>
+          <p>{{ config().description }}</p>
+        </div>
+
+        <div class="actions">
+          <label *ngIf="config().searchable !== false" class="searchbox">
+            <span class="visually-hidden">Search</span>
+            <input
+              type="search"
+              [value]="searchTerm()"
+              [placeholder]="config().searchPlaceholder ?? 'Search records'"
+              (input)="onSearchInput($any($event.target).value)"
+              (keyup.enter)="search()"
+            />
+          </label>
+          <button *ngIf="canCreate()" type="button" class="primary" (click)="startCreate()">New</button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <section class="panel list-panel">
+          <div *ngIf="loading()" class="skeleton-rows">
+            <div class="skeleton-row" *ngFor="let _ of [1,2,3,4,5]"><div class="skeleton skeleton--text" style="width:30%"></div><div class="skeleton skeleton--text" style="width:25%"></div><div class="skeleton skeleton--text" style="width:20%"></div></div>
+          </div>
+          <div *ngIf="!loading() && !pagedItems().length" class="empty-state">
+            <div style="font-size:2.5rem;margin-bottom:12px">📄</div>
+            <div style="font-weight:700;color:var(--text);margin-bottom:4px">No records found</div>
+            <div style="font-size:0.86rem">Add the first record using the button above.</div>
+          </div>
+
+          <div *ngIf="pagedItems().length" class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th *ngFor="let column of config().columns">{{ column.label }}</th>
+                  <th *ngIf="hasActions()">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of pagedItems()">
+                  <td *ngFor="let column of config().columns">
+                    <ng-container [ngSwitch]="column.type ?? 'text'">
+                      <span *ngSwitchCase="'boolean'" class="badge" [class.active]="renderBoolean(item, column.key)">{{ renderBoolean(item, column.key) ? 'Yes' : 'No' }}</span>
+                      <span *ngSwitchDefault [class.badge]="!!column.badgeClass" [className]="column.badgeClass?.(item) ?? ''">{{ renderValue(item, column.key, column) }}</span>
+                    </ng-container>
+                  </td>
+                  <td *ngIf="hasActions()" class="row-actions">
+                    <button *ngIf="canEdit()" type="button" (click)="startEdit(item)">Edit</button>
+                    <button *ngIf="canDelete()" type="button" class="danger" (click)="remove(item)">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <footer class="pager" *ngIf="totalPages() > 1">
+            <button type="button" (click)="previousPage()" [disabled]="pageIndex() === 0">Previous</button>
+            <span>Page {{ pageIndex() + 1 }} of {{ totalPages() }}</span>
+            <button type="button" (click)="nextPage()" [disabled]="pageIndex() + 1 >= totalPages()">Next</button>
+          </footer>
+        </section>
+
+        <aside class="panel editor-panel" *ngIf="editing()">
+          <div>
+            <p class="eyebrow">{{ mode() === 'create' ? 'Create record' : 'Update record' }}</p>
+            <h3>{{ mode() === 'create' ? 'New entry' : 'Edit entry' }}</h3>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+            <ng-container *ngFor="let field of config().fields">
+              <label *ngIf="field.type !== 'checkbox'" class="field">
+                <span>{{ field.label }}</span>
+                <ng-container [ngSwitch]="field.type">
+                  <textarea *ngSwitchCase="'textarea'" [formControlName]="field.name" [placeholder]="field.placeholder"></textarea>
+                  <select *ngSwitchCase="'select'" [formControlName]="field.name">
+                    <option value="">Select</option>
+                    <option *ngFor="let option of field.options ?? []" [ngValue]="option.value">{{ option.label }}</option>
+                  </select>
+                  <input *ngSwitchDefault [type]="field.type" [formControlName]="field.name" [placeholder]="field.placeholder" />
+                </ng-container>
+                <small *ngIf="isControlInvalid(field.name) && form.get(field.name)?.errors?.['required']">{{ field.label }} is required.</small>
+                <small *ngIf="isControlInvalid(field.name) && form.get(field.name)?.errors?.['pattern']">{{ field.patternErrorMessage || 'Invalid format.' }}</small>
+              </label>
+            </ng-container>
+
+            <label *ngFor="let field of checkboxFields()" class="checkbox-field">
+              <input type="checkbox" [formControlName]="field.name" />
+              <span>{{ field.label }}</span>
+            </label>
+
+            <div class="form-actions">
+              <button type="button" class="secondary" (click)="cancel()">Cancel</button>
+              <button type="submit" class="primary" [disabled]="saving() || form.invalid">{{ saving() ? 'Saving...' : 'Save' }}</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </section>

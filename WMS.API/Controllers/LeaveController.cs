@@ -25,6 +25,11 @@ public class LeaveController : ControllerBase
         ApplyLeave(
             ApplyLeaveDto dto)
     {
+        if (User.IsInRole("Admin"))
+        {
+            return Forbid("Admins cannot apply for leave.");
+        }
+
         int employeeId =
             GetEmployeeId();
 
@@ -96,13 +101,14 @@ public async Task<IActionResult>
         ApproveLeave(
             int leaveId)
     {
-        int managerId =
-    GetEmployeeId();
+        int? managerId = GetEmployeeIdOrNull();
+        int userId = GetUserId();
 
         await _leaveService
             .ApproveLeaveAsync(
                 leaveId,
-                managerId);
+                managerId,
+                userId);
 
         return Ok(
             "Leave approved.");
@@ -114,13 +120,14 @@ public async Task<IActionResult>
         RejectLeave(
             int leaveId)
     {
-        int managerId =
-    GetEmployeeId();
+        int? managerId = GetEmployeeIdOrNull();
+        int userId = GetUserId();
 
         await _leaveService
             .RejectLeaveAsync(
                 leaveId,
-                managerId);
+                managerId,
+                userId);
 
         return Ok(
             "Leave rejected.");
@@ -129,32 +136,41 @@ public async Task<IActionResult>
     private int GetEmployeeId()
     {
         var claim =
-            User.FindFirst(
-                "EmployeeId");
+            User.FindFirst("EmployeeId") ?? User.FindFirst(c => c.Type.Equals("EmployeeId", StringComparison.OrdinalIgnoreCase));
 
         if (claim == null)
         {
+            var claims = string.Join(", ", User.Claims.Select(c => c.Type + "=" + c.Value));
             throw new Exception(
-                "EmployeeId claim not found.");
+                $"EmployeeId claim not found. Available claims: {claims}");
         }
 
         return int.Parse(
             claim.Value);
     }
 
-    //private int GetUserId()
-    //{
-    //    var claim =
-    //        User.FindFirst(
-    //            ClaimTypes.NameIdentifier);
+    private int? GetEmployeeIdOrNull()
+    {
+        var claim = User.FindFirst("EmployeeId");
+        if (claim == null)
+            return null;
 
-    //    if (claim == null)
-    //    {
-    //        throw new Exception(
-    //            "UserId claim not found.");
-    //    }
+        return int.Parse(claim.Value);
+    }
 
-    //    return int.Parse(
-    //        claim.Value);
-    //}
+    private int GetUserId()
+    {
+        var claim =
+            User.FindFirst(
+                ClaimTypes.NameIdentifier);
+
+        if (claim == null)
+        {
+            throw new Exception(
+                "UserId claim not found.");
+        }
+
+        return int.Parse(
+            claim.Value);
+    }
 }

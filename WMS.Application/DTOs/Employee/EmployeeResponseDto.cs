@@ -1,4 +1,4 @@
-﻿namespace WMS.Application.DTOs.Employee;
+namespace WMS.Application.DTOs.Employee;
 
 public class EmployeeResponseDto
 {
@@ -11,6 +11,16 @@ public class EmployeeResponseDto
     public string Email { get; set; } = string.Empty;
 
     public string PhoneNumber { get; set; } = string.Empty;
+
+    public char Gender { get; set; }
+
+    public DateTime DOB { get; set; }
+
+    public DateTime DOJ { get; set; }
+
+    public int DepartmentId { get; set; }
+
+    public int RoleId { get; set; }
 
     public string DepartmentName { get; set; } = string.Empty;
 

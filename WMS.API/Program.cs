@@ -57,6 +57,7 @@ builder.Services.AddScoped<IAuditLogRepository,AuditLogRepository>();
 builder.Services.AddScoped<IAuditLogService,AuditLogService>();
 builder.Services.AddScoped<IRoleService,RoleService>();
 builder.Services.AddScoped<IProfileService,ProfileService>();
+builder.Services.AddScoped<IReportService,ReportService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

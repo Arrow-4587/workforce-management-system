@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WMS.Application.DTOs.Attendance;
@@ -26,46 +26,70 @@ public class AttendanceController : ControllerBase
         CheckIn(
             CheckInDto dto)
     {
-        int employeeId =
-            GetEmployeeId();
+        try
+        {
+            int employeeId =
+                GetEmployeeId();
 
-        var result =
-            await _attendanceService
-                .CheckInAsync(
-                    employeeId,
-                    dto);
+            var result =
+                await _attendanceService
+                    .CheckInAsync(
+                        employeeId,
+                        dto);
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var claims = User.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
+            return BadRequest(new { message = ex.Message, claims = claims });
+        }
     }
     
     [HttpPost("checkout")]
     public async Task<IActionResult>
         CheckOut()
     {
-        int employeeId =
-            GetEmployeeId();
+        try
+        {
+            int employeeId =
+                GetEmployeeId();
 
-        var result =
-            await _attendanceService
-                .CheckOutAsync(
-                    employeeId);
+            var result =
+                await _attendanceService
+                    .CheckOutAsync(
+                        employeeId);
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var claims = User.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
+            return BadRequest(new { message = ex.Message, claims = claims });
+        }
     }
 
     [HttpGet("my")]
     public async Task<IActionResult>
         GetMyAttendance()
     {
-        int employeeId =
-            GetEmployeeId();
+        try
+        {
+            int employeeId =
+                GetEmployeeId();
 
-        var result =
-            await _attendanceService
-                .GetMyAttendanceAsync(
-                    employeeId);
+            var result =
+                await _attendanceService
+                    .GetMyAttendanceAsync(
+                        employeeId);
 
-        return Ok(result);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            var claims = User.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
+            return BadRequest(new { message = ex.Message, claims = claims });
+        }
     }
     [Authorize(Roles = "Admin,Manager")]
     [HttpGet("employee/{employeeId}")]
@@ -102,13 +126,13 @@ public class AttendanceController : ControllerBase
     private int GetEmployeeId()
     {
         var employeeIdClaim =
-            User.FindFirst(
-                "EmployeeId");
+            User.FindFirst("EmployeeId") ?? User.FindFirst(c => c.Type.Equals("EmployeeId", StringComparison.OrdinalIgnoreCase));
 
         if (employeeIdClaim == null)
         {
+            var claims = string.Join(", ", User.Claims.Select(c => c.Type + "=" + c.Value));
             throw new Exception(
-                "EmployeeId claim not found.");
+                $"EmployeeId claim not found. Available claims: {claims}");
         }
 
         return int.Parse(

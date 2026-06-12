@@ -40,6 +40,7 @@ public class LeaveRepository
             int leaveId)
     {
         return await _context.Leaves
+            .Include(l => l.Employee)
             .FirstOrDefaultAsync(l =>
                 l.LeaveId == leaveId);
     }
@@ -49,6 +50,7 @@ public class LeaveRepository
             int employeeId)
     {
         return await _context.Leaves
+            .Include(l => l.Employee)
             .Where(l =>
                 l.EmpId == employeeId)
             .OrderByDescending(l =>
@@ -60,6 +62,8 @@ public class LeaveRepository
         GetPendingLeavesAsync()
     {
         return await _context.Leaves
+            .Include(l => l.Employee)
+                .ThenInclude(e => e.Role)
             .Where(l =>
                 l.Status == "Pending")
             .OrderBy(l =>
@@ -68,9 +72,17 @@ public class LeaveRepository
     }
     public async Task<int>
     GetPendingCountAsync()
-{
-    return await _context.Leaves
-        .CountAsync(l =>
-            l.Status == "Pending");
-}
+    {
+        return await _context.Leaves
+            .CountAsync(l =>
+                l.Status == "Pending");
+    }
+
+    public async Task<List<LeaveEntity>> GetAllAsync()
+    {
+        return await _context.Leaves
+            .Include(l => l.Employee)
+            .OrderByDescending(l => l.AppliedOn)
+            .ToListAsync();
+    }
 }

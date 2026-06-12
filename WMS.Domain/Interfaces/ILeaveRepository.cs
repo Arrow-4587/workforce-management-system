@@ -20,4 +20,6 @@ public interface ILeaveRepository
     Task<List<Leave>>
         GetPendingLeavesAsync();
         Task<int> GetPendingCountAsync();
+
+    Task<List<Leave>> GetAllAsync();
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WMS.Application.DTOs.Employee;
@@ -43,8 +43,12 @@ public class EmployeeController : ControllerBase
     public async Task<IActionResult> Create(
         CreateEmployeeDto dto)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null) return Unauthorized();
+        int userId = int.Parse(userIdClaim.Value);
+
         var result =
-            await _employeeService.CreateAsync(dto);
+            await _employeeService.CreateAsync(userId, dto);
 
         return Ok(result);
     }
@@ -55,7 +59,11 @@ public class EmployeeController : ControllerBase
         int id,
         UpdateEmployeeDto dto)
     {
-        await _employeeService.UpdateAsync(id, dto);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null) return Unauthorized();
+        int userId = int.Parse(userIdClaim.Value);
+
+        await _employeeService.UpdateAsync(userId, id, dto);
 
         return NoContent();
     }

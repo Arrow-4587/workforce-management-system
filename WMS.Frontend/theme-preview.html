@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WMS · Theme Preview — Arc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-bg:     #3f474d; /* Dark silver sidebar */
+      --sidebar-hover:  #4b545b;
+      --sidebar-active: #555f67;
+      --sidebar-border: #626c75;
+      --sidebar-text:   #c8cfd5;
+      --sidebar-active-text: #ffffff;
+
+      --bg:      #f1f3f5; /* Light silver for cards/components */
+      --bg-sub:  #e2e6ea; /* Matte silver for page background */
+      --border:  #cbd5e1; /* Silver-slate border */
+      --border-strong: #94a3b8;
+
+      --text:        #2a3238; /* Dark silver-slate for text */
+      --text-2:      #414b53;
+      --text-3:      #5a6873;
+      --text-4:      #7c8c9a;
+
+      --accent:      #414b53; /* Dark silver for primary accent */
+      --accent-blue: #2b6cb0;
+
+      --green:   #16a34a;
+      --green-bg:#f0fdf4;
+      --green-border:#bbf7d0;
+
+      --amber:   #d97706;
+      --amber-bg:#fffbeb;
+      --amber-border:#fde68a;
+
+      --red:     #dc2626;
+      --red-bg:  #fef2f2;
+      --red-border:#fecaca;
+
+      --blue-bg: #eff6ff;
+      --blue-border:#bfdbfe;
+
+      --radius:  6px;
+      --radius-lg: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Sidebar ──────────────────────────────────────────── */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--sidebar-border);
+      overflow: hidden;
+    }
+
+    .sidebar-top {
+      padding: 16px 14px 12px;
+      border-bottom: 1px solid var(--sidebar-border);
+    }
+    .workspace {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background .12s;
+    }
+    .workspace:hover { background: var(--sidebar-hover); }
+    .workspace-icon {
+      width: 24px; height: 24px;
+      background: var(--bg-sub);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800;
+      color: var(--sidebar-bg);
+      flex-shrink: 0;
+      letter-spacing: -.5px;
+    }
+    .workspace-name {
+      font-size: 13px; font-weight: 600;
+      color: var(--sidebar-active-text);
+      flex: 1;
+    }
+    .workspace-chevron { color: var(--sidebar-text); font-size: 11px; }
+
+    .nav-group { padding: 8px 10px 4px; }
+    .nav-group-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--sidebar-text);
+      padding: 0 6px 4px;
+      letter-spacing: .02em;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: var(--radius);
+      color: var(--sidebar-text);
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background .1s, color .1s;
+      white-space: nowrap;
+    }
+    .nav-item:hover {
+      background: var(--sidebar-hover);
+      color: #e4e4e7;
+    }
+    .nav-item.active {
+      background: var(--sidebar-active);
+      color: var(--sidebar-active-text);
+      font-weight: 500;
+    }
+    .nav-icon {
+      width: 16px; height: 16px;
+      opacity: .7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .nav-count {
+      margin-left: auto;
+      background: #2a2a2a;
+      color: var(--sidebar-text);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      border-top: 1px solid var(--sidebar-border);
+      padding: 8px 10px;
+    }
+    .user-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; border-radius: var(--radius);
+      cursor: pointer; transition: background .12s;
+    }
+    .user-row:hover { background: var(--sidebar-hover); }
+    .user-ava {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #e4e4e7;
+      flex-shrink: 0;
+    }
+    .user-n { font-size: 12.5px; font-weight: 500; color: #e4e4e7; }
+    .user-r { font-size: 11px; color: var(--sidebar-text); }
+
+    /* ── Main ─────────────────────────────────────────────── */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      min-height: 100vh;
+      background: var(--bg-sub);
+    }
+
+    /* ── Topbar ───────────────────────────────────────────── */
+    .topbar {
+      height: 48px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-left {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px;
+    }
+    .breadcrumb-item { color: var(--text-3); }
+    .breadcrumb-sep { color: var(--border-strong); margin: 0 2px; }
+    .breadcrumb-current { color: var(--text); font-weight: 500; }
+
+    .topbar-right { display: flex; align-items: center; gap: 6px; }
+
+    .search-input {
+      display: flex; align-items: center; gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      font-size: 12.5px;
+      color: var(--text-3);
+      background: var(--bg-sub);
+      cursor: text;
+      width: 200px;
+    }
+    .search-input:hover { border-color: var(--border-strong); }
+    .search-kbd {
+      margin-left: auto;
+      background: var(--border);
+      color: var(--text-4);
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+
+    .tb-btn {
+      height: 30px;
+      display: flex; align-items: center; gap: 5px;
+      padding: 0 10px;
+      border-radius: var(--radius);
+      font-size: 12.5px; font-weight: 500;
+      cursor: pointer; border: none;
+      transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .tb-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    }
+    .tb-btn-ghost {
+      background: transparent; color: var(--text-2);
+    }
+    .tb-btn-ghost:hover { background: var(--bg-sub); color: var(--text); }
+    .tb-btn-outline {
+      background: var(--bg);
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .tb-btn-outline:hover { background: var(--bg-sub); border-color: var(--border-strong); color: var(--text); }
+    .tb-btn-solid {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .tb-btn-solid:hover { background: #2c353d; }
+
+    .ava-sm {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #3f3f46;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #fff;
+      cursor: pointer; border: 1.5px solid var(--border);
+    }
+
+    /* ── Content ──────────────────────────────────────────── */
+    .content { padding: 32px 28px; }
+
+    /* ── Page Header ──────────────────────────────────────── */
+    .page-head {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .page-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -.3px; }
+    .page-desc { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      height: 32px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0 12px;
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; border: none;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    }
+    .btn-default {
+      background: var(--bg);
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-default:hover { background: var(--bg-sub); color: var(--text); border-color: var(--border-strong); }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover { background: #2c353d; }
+
+    /* ── Stat Cards ───────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: default;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .stat:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
+    .stat-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .stat-label { font-size: 12px; font-weight: 500; color: var(--text-3); }
+    .stat-icon-wrap {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      background: var(--bg-sub);
+    }
+    .stat-number {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .stat-sub {
+      display: flex; align-items: center; gap: 4px;
+      margin-top: 6px;
+      font-size: 11.5px;
+      color: var(--text-3);
+    }
+    .stat-delta {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .delta-up   { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .delta-same { background: var(--bg-sub); color: var(--text-4); border: 1px solid var(--border); }
+    .delta-down { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+
+    /* ── Two Col ──────────────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+    /* ── Panel ────────────────────────────────────────────── */
+    .panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .panel:hover {
+      border-color: var(--border-strong);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
+    .panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .panel-sub { font-size: 12px; color: var(--text-3); }
+    .panel-action {
+      font-size: 12px; color: var(--text-3); cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-sub);
+      border-radius: 5px;
+      padding: 3px 8px;
+      transition: all .12s;
+    }
+    .panel-action:hover { color: var(--text); border-color: var(--border-strong); }
+    .panel-body { padding: 16px; }
+
+    /* ── Chart ────────────────────────────────────────────── */
+    .chart-wrap { position: relative; }
+    .chart-grid {
+      display: flex; gap: 3px; align-items: flex-end;
+      height: 100px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+      position: relative;
+    }
+    .chart-grid-line {
+      position: absolute;
+      left: 0; right: 0;
+      border-top: 1px dashed var(--border);
+    }
+    .bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+    .bar-seg {
+      border-radius: 2px 2px 0 0;
+      transition: opacity .15s;
+      cursor: pointer;
+    }
+    .bar-seg:hover { opacity: .8; }
+    .bar-office { background: #18181b; }
+    .bar-remote { background: #d4d4d8; }
+    .chart-x {
+      display: flex; gap: 3px;
+      margin-top: 6px;
+    }
+    .chart-x-label { flex: 1; text-align: center; font-size: 10.5px; color: var(--text-4); font-weight: 500; }
+    .chart-legend {
+      display: flex; gap: 12px; margin-bottom: 12px;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11.5px; color: var(--text-3); font-weight: 500;
+    }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+    /* ── Table ────────────────────────────────────────────── */
+    .table-wrap { overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-3);
+      text-align: left;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-sub);
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+      cursor: pointer;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-sub); }
+    tbody td {
+      padding: 11px 16px;
+      font-size: 13px;
+      color: var(--text-2);
+      vertical-align: middle;
+    }
+    .cell-primary { color: var(--text); font-weight: 500; }
+    .cell-mono { font-family: ui-monospace, monospace; font-size: 12px; color: var(--text-3); }
+
+    .row-name { display: flex; align-items: center; gap: 10px; }
+    .ava-table {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e4e4e7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: #3f3f46;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Badges ───────────────────────────────────────────── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .badge-dot-sm { width: 5px; height: 5px; border-radius: 50%; }
+    .b-green  { background: var(--green-bg);  color: var(--green);  border-color: var(--green-border); }
+    .b-green  .badge-dot-sm { background: var(--green); }
+    .b-amber  { background: var(--amber-bg);  color: var(--amber);  border-color: var(--amber-border); }
+    .b-amber  .badge-dot-sm { background: var(--amber); }
+    .b-red    { background: var(--red-bg);    color: var(--red);    border-color: var(--red-border); }
+    .b-red    .badge-dot-sm { background: var(--red); }
+    .b-blue   { background: var(--blue-bg);   color: var(--accent-blue); border-color: var(--blue-border); }
+    .b-blue   .badge-dot-sm { background: var(--accent-blue); }
+    .b-neutral{ background: var(--bg-sub);    color: var(--text-3); border-color: var(--border); }
+    .b-neutral .badge-dot-sm { background: var(--text-4); }
+
+    /* ── Action Buttons ───────────────────────────────────── */
+    .action-group { display: flex; gap: 4px; }
+    .act {
+      height: 26px; padding: 0 8px;
+      border-radius: 4px;
+      font-size: 12px; font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-3);
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .act:hover {
+      background: var(--bg-sub);
+      color: var(--text);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    }
+    .act-danger:hover { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+
+    /* ── Leave Panel ──────────────────────────────────────── */
+    .leave-item {
+      display: flex; align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .leave-item:last-child { border-bottom: none; }
+    .leave-ava {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e4e4e7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10.5px; font-weight: 600; color: #52525b;
+      flex-shrink: 0; border: 1px solid var(--border);
+    }
+    .leave-info { flex: 1; min-width: 0; }
+    .leave-name-txt { font-size: 12.5px; font-weight: 600; color: var(--text); }
+    .leave-meta { font-size: 11.5px; color: var(--text-3); }
+    .leave-dates-txt { font-size: 11.5px; color: var(--text-3); text-align: right; margin-right: 8px; line-height: 1.6; }
+    .leave-acts { display: flex; gap: 4px; flex-shrink: 0; }
+    .lap {
+      height: 24px; padding: 0 8px;
+      border-radius: 4px; font-size: 11.5px; font-weight: 500;
+      cursor: pointer; border: 1px solid;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .lap:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    }
+    .lap-ok  { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+    .lap-ok:hover  { background: #15803d; color: #fff; border-color: #15803d; }
+    .lap-no  { background: var(--bg-sub); color: var(--text-3); border-color: var(--border); }
+    .lap-no:hover  { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+
+    /* ── Form Panel ───────────────────────────────────────── */
+    .form-row { margin-bottom: 14px; }
+    .f-label {
+      display: block;
+      font-size: 12px; font-weight: 500; color: var(--text-2);
+      margin-bottom: 5px;
+    }
+    .f-input {
+      width: 100%; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 10px;
+      font-size: 13px; color: var(--text);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    .f-input:focus { border-color: #71717a; box-shadow: 0 0 0 3px rgba(113,113,122,.1); }
+    .f-input.has-error { border-color: var(--red); }
+    .f-input.has-error:focus { box-shadow: 0 0 0 3px rgba(220,38,38,.1); }
+    .f-select {
+      width: 100%; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 10px;
+      font-size: 13px; color: var(--text);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      outline: none; cursor: pointer;
+    }
+    .f-hint { font-size: 11.5px; color: var(--text-4); margin-top: 4px; }
+    .f-error { font-size: 11.5px; color: var(--red); margin-top: 4px; }
+
+    /* ── Divider ──────────────────────────────────────────── */
+    .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* ── Toast ────────────────────────────────────────────── */
+    .toasts {
+      position: fixed; bottom: 20px; right: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+      z-index: 999;
+    }
+    .toast {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      display: flex; align-items: flex-start; gap: 10px;
+      min-width: 280px; max-width: 340px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.06);
+      animation: toastIn .2s ease;
+    }
+    @keyframes toastIn { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .toast-indicator { width: 3px; border-radius: 3px; align-self: stretch; flex-shrink: 0; }
+    .toast-txt .t-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .toast-txt .t-desc  { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+    .toast-close { margin-left: auto; cursor: pointer; color: var(--text-4); font-size: 16px; line-height: 1; padding: 0 2px; }
+    .toast-close:hover { color: var(--text-2); }
+    .toast.ok .toast-indicator { background: var(--green); }
+    .toast.warn .toast-indicator { background: var(--amber); }
+    .toast.info .toast-indicator { background: #71717a; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="workspace">
+        <div class="workspace-icon">W</div>
+        <span class="workspace-name">Workforce MS</span>
+        <span class="workspace-chevron">⌄</span>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-item active">
+        <span class="nav-icon">▣</span> Dashboard
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">People</div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Employees
+        <span class="nav-count">248</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Departments
+        <span class="nav-count">14</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Roles
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Workforce</div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Attendance
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Leave
+        <span class="nav-count">9</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Projects
+        <span class="nav-count">37</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Allocation
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Business</div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Clients
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Announcements
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">System</div>
+      <div class="nav-item">
+        <span class="nav-icon">◻</span> Audit Logs
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-ava">A</div>
+        <div>
+          <div class="user-n">Admin User</div>
+          <div class="user-r">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <nav class="topbar">
+      <div class="topbar-left">
+        <span class="breadcrumb-item">Workforce MS</span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <div class="search-input">
+          <span style="font-size:12px;color:#a1a1aa">⌕</span>
+          Search...
+          <span class="search-kbd">⌘K</span>
+        </div>
+        <button class="tb-btn tb-btn-ghost">
+          <span style="font-size:13px">🔔</span>
+        </button>
+        <div class="ava-sm">A</div>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Page header -->
+      <div class="page-head">
+        <div>
+          <div class="page-title">Dashboard</div>
+          <div class="page-desc">June 2026 · Admin view</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-default">Export CSV</button>
+          <button class="btn btn-primary">+ Add Employee</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Total Employees</span>
+            <div class="stat-icon-wrap">👤</div>
+          </div>
+          <div class="stat-number">248</div>
+          <div class="stat-sub">
+            <span class="stat-delta delta-up">+12</span>
+            <span>this month</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Departments</span>
+            <div class="stat-icon-wrap">🏢</div>
+          </div>
+          <div class="stat-number">14</div>
+          <div class="stat-sub">
+            <span class="stat-delta delta-same">—</span>
+            <span>no change</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Active Projects</span>
+            <div class="stat-icon-wrap">📂</div>
+          </div>
+          <div class="stat-number">37</div>
+          <div class="stat-sub">
+            <span class="stat-delta delta-up">+3</span>
+            <span>new</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Pending Leaves</span>
+            <div class="stat-icon-wrap">📋</div>
+          </div>
+          <div class="stat-number">9</div>
+          <div class="stat-sub">
+            <span class="stat-delta delta-down">↑3</span>
+            <span>needs review</span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-top">
+            <span class="stat-label">Today's Attendance</span>
+            <div class="stat-icon-wrap">✓</div>
+          </div>
+          <div class="stat-number">193</div>
+          <div class="stat-sub">
+            <span class="stat-delta delta-up">78%</span>
+            <span>rate</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid 2 col -->
+      <div class="grid-2">
+
+        <!-- Chart -->
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Monthly Attendance</div>
+              <div class="panel-sub">Jan – Jun 2026</div>
+            </div>
+            <button class="panel-action">Last 6 months ⌄</button>
+          </div>
+          <div class="panel-body">
+            <div class="chart-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#18181b"></div> Office</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#d4d4d8"></div> Remote</div>
+            </div>
+            <div class="chart-wrap">
+              <div class="chart-grid">
+                <div class="chart-grid-line" style="top:0%"></div>
+                <div class="chart-grid-line" style="top:50%"></div>
+                <div class="bar-col">
+                  <div class="bar-seg bar-office" style="height:70px"></div>
+                  <div class="bar-seg bar-remote" style="height:28px"></div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-seg bar-office" style="height:82px"></div>
+                  <div class="bar-seg bar-remote" style="height:35px"></div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-seg bar-office" style="height:60px"></div>
+                  <div class="bar-seg bar-remote" style="height:50px"></div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-seg bar-office" style="height:88px"></div>
+                  <div class="bar-seg bar-remote" style="height:22px"></div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-seg bar-office" style="height:76px"></div>
+                  <div class="bar-seg bar-remote" style="height:42px"></div>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-seg bar-office" style="height:90px"></div>
+                  <div class="bar-seg bar-remote" style="height:30px"></div>
+                </div>
+              </div>
+              <div class="chart-x">
+                <div class="chart-x-label">Jan</div>
+                <div class="chart-x-label">Feb</div>
+                <div class="chart-x-label">Mar</div>
+                <div class="chart-x-label">Apr</div>
+                <div class="chart-x-label">May</div>
+                <div class="chart-x-label">Jun</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Requests -->
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Leave Requests</div>
+              <div class="panel-sub">9 pending approval</div>
+            </div>
+            <button class="panel-action">View all →</button>
+          </div>
+          <div class="panel-body" style="padding:0 16px;">
+            <div class="leave-item">
+              <div class="leave-ava">PS</div>
+              <div class="leave-info">
+                <div class="leave-name-txt">Priya Sharma</div>
+                <div class="leave-meta">Sick Leave · Engineering</div>
+              </div>
+              <div class="leave-dates-txt">Jun 13–14<br><span style="color:#a1a1aa">2 days</span></div>
+              <div class="leave-acts">
+                <button class="lap lap-ok">Approve</button>
+                <button class="lap lap-no">Reject</button>
+              </div>
+            </div>
+            <div class="leave-item">
+              <div class="leave-ava">RM</div>
+              <div class="leave-info">
+                <div class="leave-name-txt">Rahul Mehta</div>
+                <div class="leave-meta">Casual Leave · Design</div>
+              </div>
+              <div class="leave-dates-txt">Jun 15–17<br><span style="color:#a1a1aa">3 days</span></div>
+              <div class="leave-acts">
+                <button class="lap lap-ok">Approve</button>
+                <button class="lap lap-no">Reject</button>
+              </div>
+            </div>
+            <div class="leave-item">
+              <div class="leave-ava">AP</div>
+              <div class="leave-info">
+                <div class="leave-name-txt">Anjali Patel</div>
+                <div class="leave-meta">Annual Leave · Marketing</div>
+              </div>
+              <div class="leave-dates-txt">Jun 20–25<br><span style="color:#a1a1aa">5 days</span></div>
+              <div class="leave-acts">
+                <button class="lap lap-ok">Approve</button>
+                <button class="lap lap-no">Reject</button>
+              </div>
+            </div>
+            <div class="leave-item">
+              <div class="leave-ava">VS</div>
+              <div class="leave-info">
+                <div class="leave-name-txt">Vikram Singh</div>
+                <div class="leave-meta">Earned Leave · Backend</div>
+              </div>
+              <div class="leave-dates-txt">Jul 1–3<br><span style="color:#a1a1aa">3 days</span></div>
+              <div class="leave-acts">
+                <button class="lap lap-ok">Approve</button>
+                <button class="lap lap-no">Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Employee Table -->
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Employees</div>
+            <div class="panel-sub">248 total</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input class="f-input" style="width:180px;height:28px;font-size:12px" placeholder="Filter employees..." />
+            <button class="btn btn-default" style="height:28px;font-size:12px;padding:0 10px">Status ⌄</button>
+            <button class="btn btn-default" style="height:28px;font-size:12px;padding:0 10px">Dept ⌄</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Phone</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="row-name">
+                    <div class="ava-table">PS</div>
+                    <div>
+                      <div class="cell-primary">Priya Sharma</div>
+                      <div style="font-size:11.5px;color:var(--text-4)">priya@wms.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Engineering</td>
+                <td>Senior Developer</td>
+                <td><span class="badge b-green"><span class="badge-dot-sm"></span>Active</span></td>
+                <td class="cell-mono">Mar 2024</td>
+                <td class="cell-mono">9876543210</td>
+                <td>
+                  <div class="action-group">
+                    <button class="act">Edit</button>
+                    <button class="act act-danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="row-name">
+                    <div class="ava-table">RM</div>
+                    <div>
+                      <div class="cell-primary">Rahul Mehta</div>
+                      <div style="font-size:11.5px;color:var(--text-4)">rahul@wms.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Design</td>
+                <td>UI/UX Designer</td>
+                <td><span class="badge b-green"><span class="badge-dot-sm"></span>Active</span></td>
+                <td class="cell-mono">Jan 2024</td>
+                <td class="cell-mono">8765432109</td>
+                <td>
+                  <div class="action-group">
+                    <button class="act">Edit</button>
+                    <button class="act act-danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="row-name">
+                    <div class="ava-table">AP</div>
+                    <div>
+                      <div class="cell-primary">Anjali Patel</div>
+                      <div style="font-size:11.5px;color:var(--text-4)">anjali@wms.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Marketing</td>
+                <td>Manager</td>
+                <td><span class="badge b-amber"><span class="badge-dot-sm"></span>On Leave</span></td>
+                <td class="cell-mono">Sep 2023</td>
+                <td class="cell-mono">7654321098</td>
+                <td>
+                  <div class="action-group">
+                    <button class="act">Edit</button>
+                    <button class="act act-danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="row-name">
+                    <div class="ava-table">VS</div>
+                    <div>
+                      <div class="cell-primary">Vikram Singh</div>
+                      <div style="font-size:11.5px;color:var(--text-4)">vikram@wms.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Backend</td>
+                <td>Team Lead</td>
+                <td><span class="badge b-blue"><span class="badge-dot-sm"></span>Remote</span></td>
+                <td class="cell-mono">Jun 2023</td>
+                <td class="cell-mono">6543210987</td>
+                <td>
+                  <div class="action-group">
+                    <button class="act">Edit</button>
+                    <button class="act act-danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="row-name">
+                    <div class="ava-table">NK</div>
+                    <div>
+                      <div class="cell-primary">Nikhil Kumar</div>
+                      <div style="font-size:11.5px;color:var(--text-4)">nikhil@wms.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td>Engineering</td>
+                <td>Developer</td>
+                <td><span class="badge b-neutral"><span class="badge-dot-sm"></span>Inactive</span></td>
+                <td class="cell-mono">Feb 2023</td>
+                <td class="cell-mono">5432109876</td>
+                <td>
+                  <div class="action-group">
+                    <button class="act">Edit</button>
+                    <button class="act act-danger">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:12px;color:var(--text-3)">Showing 5 of 248 employees</span>
+          <div style="display:flex;gap:4px;">
+            <button class="act" style="height:26px">← Prev</button>
+            <button class="act" style="height:26px;background:var(--accent);color:#fff;border-color:var(--accent)">1</button>
+            <button class="act" style="height:26px">2</button>
+            <button class="act" style="height:26px">3</button>
+            <button class="act" style="height:26px">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form + Components Row -->
+      <div class="grid-2" style="margin-top:12px">
+
+        <!-- Form -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Add Employee</div>
+            <button class="panel-action">× Close</button>
+          </div>
+          <div class="panel-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-row" style="margin:0">
+                <label class="f-label">First Name</label>
+                <input class="f-input" placeholder="Priya" />
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="f-label">Last Name</label>
+                <input class="f-input" placeholder="Sharma" />
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:12px">
+              <label class="f-label">Email Address</label>
+              <input class="f-input" value="priya@wms.com" />
+            </div>
+            <div class="form-row">
+              <label class="f-label">Phone Number</label>
+              <input class="f-input has-error" value="123" />
+              <div class="f-error">Must be 10–15 digits</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-row" style="margin:0">
+                <label class="f-label">Department</label>
+                <select class="f-select">
+                  <option>Engineering</option>
+                  <option>Design</option>
+                  <option>Marketing</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin:0">
+                <label class="f-label">Gender</label>
+                <select class="f-select">
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:16px">
+              <button class="btn btn-primary" style="flex:1">Create Employee</button>
+              <button class="btn btn-default">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Component showcase -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title">Design Tokens</div>
+          </div>
+          <div class="panel-body">
+            <div style="margin-bottom:14px">
+              <div style="font-size:11.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Status badges</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <span class="badge b-green"><span class="badge-dot-sm"></span>Active</span>
+                <span class="badge b-amber"><span class="badge-dot-sm"></span>Pending</span>
+                <span class="badge b-red"><span class="badge-dot-sm"></span>Rejected</span>
+                <span class="badge b-blue"><span class="badge-dot-sm"></span>Remote</span>
+                <span class="badge b-neutral"><span class="badge-dot-sm"></span>Inactive</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="margin:14px 0">
+              <div style="font-size:11.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Buttons</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <button class="btn btn-primary">Primary</button>
+                <button class="btn btn-default">Default</button>
+                <button class="btn" style="background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)">Danger</button>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div style="margin-top:14px">
+              <div style="font-size:11.5px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Color system</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <div title="#3f474d (Sidebar Dark Silver)" style="width:32px;height:32px;border-radius:6px;background:#3f474d;border:1px solid var(--border)"></div>
+                <div title="#414b53 (Accent Dark Silver)" style="width:32px;height:32px;border-radius:6px;background:#414b53;border:1px solid var(--border)"></div>
+                <div title="#5a6873 (Medium Dark Silver)" style="width:32px;height:32px;border-radius:6px;background:#5a6873;border:1px solid var(--border)"></div>
+                <div title="#cbd5e1 (Silver Border)" style="width:32px;height:32px;border-radius:6px;background:#cbd5e1;border:1px solid var(--border)"></div>
+                <div title="#f1f3f5 (Card Silver)" style="width:32px;height:32px;border-radius:6px;background:#f1f3f5;border:1px solid var(--border)"></div>
+                <div title="#e2e6ea (Background Silver)" style="width:32px;height:32px;border-radius:6px;background:#e2e6ea;border:1px solid var(--border)"></div>
+                <div title="#16a34a green" style="width:32px;height:32px;border-radius:6px;background:#16a34a;border:1px solid var(--border)"></div>
+                <div title="#d97706 amber" style="width:32px;height:32px;border-radius:6px;background:#d97706;border:1px solid var(--border)"></div>
+                <div title="#dc2626 red" style="width:32px;height:32px;border-radius:6px;background:#dc2626;border:1px solid var(--border)"></div>
+                <div title="#2b6cb0 blue" style="width:32px;height:32px;border-radius:6px;background:#2b6cb0;border:1px solid var(--border)"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text-4);margin-top:6px">Hover swatches to see hex values</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div class="toasts">
+    <div class="toast ok">
+      <div class="toast-indicator"></div>
+      <div class="toast-txt">
+        <div class="t-title">Employee created</div>
+        <div class="t-desc">Priya Sharma added to Engineering.</div>
+      </div>
+      <span class="toast-close">×</span>
+    </div>
+    <div class="toast warn">
+      <div class="toast-indicator"></div>
+      <div class="toast-txt">
+        <div class="t-title">9 leaves pending</div>
+        <div class="t-desc">Review required before end of day.</div>
+      </div>
+      <span class="toast-close">×</span>
+    </div>
+  </div>
+
+</body>
+</html>

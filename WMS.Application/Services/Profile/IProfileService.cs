@@ -1,4 +1,5 @@
 ﻿using WMS.Application.DTOs.Profile;
+using WMS.Application.DTOs.Auth;
 
 namespace WMS.Application.Services.Profile;
 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using WMS.Application.DTOs.Profile;
+using WMS.Application.DTOs.Auth;
 using WMS.Application.Services.Profile;
-
+using WMS.Application.DTOs.Profile;
 namespace WMS.API.Controllers;
 
 [Route("api/[controller]")]

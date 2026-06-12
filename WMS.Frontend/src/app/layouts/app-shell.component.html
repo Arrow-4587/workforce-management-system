@@ -1,0 +1,125 @@
+<app-toast></app-toast>
+    <app-confirm></app-confirm>
+    <div class="shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+
+      <!-- Sidebar Overlay (mobile) -->
+      <div
+        class="sidebar-overlay"
+        *ngIf="mobileSidebarOpen()"
+        (click)="closeMobileSidebar()"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" [class.mobile-open]="mobileSidebarOpen()">
+        <!-- Brand -->
+        <div class="brand">
+          <div class="brand-mark">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="1" y="1" width="9" height="9" rx="3" fill="white" fill-opacity="0.9"/>
+              <rect x="12" y="1" width="9" height="9" rx="3" fill="white" fill-opacity="0.55"/>
+              <rect x="1" y="12" width="9" height="9" rx="3" fill="white" fill-opacity="0.55"/>
+              <rect x="12" y="12" width="9" height="9" rx="3" fill="white" fill-opacity="0.85"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <strong>Workforce</strong>
+            <span>Management Suite</span>
+          </div>
+          <button class="collapse-btn desktop-only" type="button" (click)="toggleSidebar()" [attr.aria-label]="sidebarCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Nav Label -->
+        <div class="nav-section-label" *ngIf="!sidebarCollapsed()">NAVIGATION</div>
+
+        <!-- Navigation -->
+        <nav>
+          <a
+            *ngFor="let item of visibleNavItems()"
+            [routerLink]="['/', item.path]"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: item.path === 'dashboard' }"
+            class="nav-item"
+            [attr.title]="sidebarCollapsed() ? item.label : null"
+            (click)="closeMobileSidebar()"
+          >
+            <span class="nav-icon" [innerHTML]="item.icon"></span>
+            <span class="nav-label" *ngIf="!sidebarCollapsed()">{{ item.label }}</span>
+            <span class="nav-active-bar"></span>
+          </a>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+          <a routerLink="/profile" class="user-mini" (click)="closeMobileSidebar()">
+            <span class="avatar">{{ userInitials() }}</span>
+            <div class="user-info" *ngIf="!sidebarCollapsed()">
+              <strong>{{ auth.getUsername() ?? 'User' }}</strong>
+              <span>{{ auth.getUserRole() ?? '' }}</span>
+            </div>
+          </a>
+          <button class="logout-btn" type="button" (click)="logout()" [attr.title]="sidebarCollapsed() ? 'Sign out' : null">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 2H3a1 1 0 00-1 1v12a1 1 0 001 1h4M12 13l4-4-4-4M16 9H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span *ngIf="!sidebarCollapsed()">Sign out</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Workspace -->
+      <section class="workspace">
+        <!-- Top Bar -->
+        <header class="topbar">
+          <!-- Mobile hamburger -->
+          <button class="hamburger mobile-only" type="button" (click)="openMobileSidebar()" aria-label="Open menu">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+
+          <div class="topbar-left">
+            <p class="eyebrow">Enterprise Workforce Management</p>
+            <h1 class="page-title">{{ pageTitle() }}</h1>
+          </div>
+
+          <div class="topbar-right">
+            <button class="theme-toggle" type="button" (click)="toggleTheme()" [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'">
+              <svg *ngIf="!isDarkMode()" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+              <svg *ngIf="isDarkMode()" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+
+            <div class="user-chip">
+              <span class="avatar">{{ userInitials() }}</span>
+              <div class="user-chip-info">
+                <strong>{{ auth.getUsername() ?? 'User' }}</strong>
+                <span class="role-badge" [ngClass]="roleBadgeClass()">{{ auth.getUserRole() ?? '' }}</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <main class="content">
+          <router-outlet />
+        </main>
+      </section>
+
+      <!-- Toast Outlet -->
+      <app-toast />
+    </div>

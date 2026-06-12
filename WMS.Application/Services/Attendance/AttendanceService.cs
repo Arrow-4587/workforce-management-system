@@ -41,12 +41,12 @@ public class AttendanceService
                 "Already checked in today.");
         }
 
-        if (dto.WorkMode != "WFH" &&
-    dto.WorkMode != "WFO" &&
+        if (dto.WorkMode != "Remote" &&
+    dto.WorkMode != "Office" &&
     dto.WorkMode != "Hybrid")
         {
             throw new Exception(
-                "WorkMode must be WFH, WFO or Hybrid.");
+                "WorkMode must be Remote, Office or Hybrid.");
         }
         var attendance =
             new AttendanceEntity
@@ -186,10 +186,10 @@ public class AttendanceService
                 attendance.AttendanceId,
 
             CheckIn =
-                attendance.CheckIn,
+                DateTime.SpecifyKind(attendance.CheckIn, DateTimeKind.Utc),
 
             CheckOut =
-                attendance.CheckOut,
+                attendance.CheckOut.HasValue ? DateTime.SpecifyKind(attendance.CheckOut.Value, DateTimeKind.Utc) : null,
 
             TotalHours =
                 attendance.TotalHours,

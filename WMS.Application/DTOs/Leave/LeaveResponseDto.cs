@@ -4,6 +4,12 @@ public class LeaveResponseDto
 {
     public int LeaveId { get; set; }
 
+    public int EmpId { get; set; }
+
+    public string? EmployeeName { get; set; }
+
+    public string? EmployeeRole { get; set; }
+
     public string LeaveType { get; set; }
         = string.Empty;
 

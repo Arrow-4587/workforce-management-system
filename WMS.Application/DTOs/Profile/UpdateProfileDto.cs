@@ -1,4 +1,6 @@
-﻿namespace WMS.Application.DTOs.Profile;
+﻿using WMS.Application.DTOs.Auth;
+
+namespace WMS.Application.DTOs.Profile;
 
 public class UpdateProfileDto
 {

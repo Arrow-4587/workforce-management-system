@@ -1,4 +1,4 @@
-﻿using WMS.Domain.Entities;
+using WMS.Domain.Entities;
 
 namespace WMS.Domain.Interfaces;
 
@@ -29,4 +29,5 @@ Task<int> GetMonthlyAttendanceCountAsync(
     int year,
     int month);
 
+    Task<List<Attendance>> GetAllAsync();
 }

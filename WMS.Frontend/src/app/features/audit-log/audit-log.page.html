@@ -1,0 +1,85 @@
+<section class="page">
+
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Compliance & Security</p>
+          <h2>Audit Logs</h2>
+          <p class="subtitle">Track every system change — who did what, and when.</p>
+        </div>
+        <div class="header-actions">
+          <div class="select-wrap">
+            <select [value]="selectedEntity()" (change)="onEntityChange($any($event.target).value)" class="entity-select">
+              <option value="">All Entities</option>
+              <option *ngFor="let e of entities" [value]="e">{{ e }}</option>
+            </select>
+          </div>
+          <button class="btn btn--secondary" (click)="refresh()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 8A6 6 0 102 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M14 4v4h-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      <!-- Summary -->
+      <div class="summary-row" *ngIf="!loading() && records().length">
+        <div class="summary-chip"><strong>{{ records().length }}</strong> total entries</div>
+        <div class="summary-chip success"><strong>{{ countByAction('Create') }}</strong> creates</div>
+        <div class="summary-chip warning"><strong>{{ countByAction('Update') }}</strong> updates</div>
+        <div class="summary-chip danger"><strong>{{ countByAction('Delete') }}</strong> deletes</div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div *ngIf="loading()" class="skeleton-rows">
+          <div class="skeleton-row" *ngFor="let _ of [1,2,3,4,5,6]">
+            <div class="skeleton skeleton--text" style="width:15%"></div>
+            <div class="skeleton skeleton--text" style="width:10%"></div>
+            <div class="skeleton skeleton--text" style="width:15%"></div>
+            <div class="skeleton skeleton--text" style="width:20%"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!loading() && !pagedItems().length" class="empty-state">
+          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-title">No audit logs found</div>
+          <div class="empty-state-sub">{{ selectedEntity() ? 'No logs for ' + selectedEntity() + '.' : 'No audit activity recorded yet.' }}</div>
+        </div>
+
+        <div *ngIf="!loading() && pagedItems().length" class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entity</th>
+                <th>Record ID</th>
+                <th>Action</th>
+                <th>Performed By</th>
+                <th>Date & Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of pagedItems()">
+                <td class="text-muted" style="font-size:0.78rem">{{ log.auditId }}</td>
+                <td><strong>{{ log.entityName }}</strong></td>
+                <td class="text-muted">{{ log.recordId }}</td>
+                <td>
+                  <span class="badge" [ngClass]="actionBadge(log.action)">
+                    {{ log.action }}
+                  </span>
+                </td>
+                <td class="text-muted">{{ log.username ?? '—' }}</td>
+                <td class="text-muted" style="font-size:0.82rem">{{ log.createdOn | date:'medium' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pager" *ngIf="totalPages() > 1">
+          <button class="btn btn--ghost btn--sm" (click)="prevPage()" [disabled]="page() === 0">← Previous</button>
+          <span class="pager-info">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+          <button class="btn btn--ghost btn--sm" (click)="nextPage()" [disabled]="page() + 1 >= totalPages()">Next →</button>
+        </div>
+      </div>
+
+    </section>

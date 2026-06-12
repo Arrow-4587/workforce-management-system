@@ -175,14 +175,15 @@ public async Task<
 
     return pendingLeaves
         .Where(l =>
-            employeeIds.Contains(
-                l.EmpId))
+            employeeIds.Contains(l.EmpId) &&
+            l.Employee?.Role?.RoleName != "Manager")
         .Select(Map)
         .ToList();
 }
     public async Task ApproveLeaveAsync(
         int leaveId,
-        int managerId)
+        int? managerId,
+        int userId)
     {
         var leave =
             await _leaveRepository
@@ -193,16 +194,19 @@ public async Task<
             throw new Exception(
                 "Leave not found.");
         }
-        bool canApprove =
-    await _employeeProjectRepository
-        .IsEmployeeUnderManagerAsync(
-            leave.EmpId,
-            managerId);
-
-        if (!canApprove)
+        if (managerId != null)
         {
-            throw new Exception(
-                "You are not authorized to approve this employee's leave.");
+            bool canApprove =
+                await _employeeProjectRepository
+                    .IsEmployeeUnderManagerAsync(
+                        leave.EmpId,
+                        managerId.Value);
+
+            if (!canApprove)
+            {
+                throw new Exception(
+                    "You are not authorized to approve this employee's leave.");
+            }
         }
 
         if (leave.Status != "Pending")
@@ -228,7 +232,7 @@ public async Task<
                     RecordId =
                         leave.LeaveId,
                     Action = "Approved",
-                    CreatedBy = managerId,
+                    CreatedBy = userId,
                     CreatedOn =
                         DateTime.UtcNow
                 });
@@ -236,7 +240,8 @@ public async Task<
 
     public async Task RejectLeaveAsync(
         int leaveId,
-        int managerId)
+        int? managerId,
+        int userId)
     {
         var leave =
             await _leaveRepository
@@ -247,16 +252,19 @@ public async Task<
             throw new Exception(
                 "Leave not found.");
         }
-        bool canApprove =
-    await _employeeProjectRepository
-        .IsEmployeeUnderManagerAsync(
-            leave.EmpId,
-            managerId);
-
-        if (!canApprove)
+        if (managerId != null)
         {
-            throw new Exception(
-                "You are not authorized to reject this employee's leave.");
+            bool canApprove =
+                await _employeeProjectRepository
+                    .IsEmployeeUnderManagerAsync(
+                        leave.EmpId,
+                        managerId.Value);
+
+            if (!canApprove)
+            {
+                throw new Exception(
+                    "You are not authorized to reject this employee's leave.");
+            }
         }
 
         if (leave.Status != "Pending")
@@ -281,7 +289,7 @@ public async Task<
                     RecordId =
                         leave.LeaveId,
                     Action = "Rejected",
-                    CreatedBy = managerId,
+                    CreatedBy = userId,
                     CreatedOn =
                         DateTime.UtcNow
                 });
@@ -294,6 +302,15 @@ public async Task<
         return new LeaveResponseDto
         {
             LeaveId = leave.LeaveId,
+            EmpId = leave.EmpId,
+            EmployeeName =
+                leave.Employee == null
+                ? string.Empty
+                : $"{leave.Employee.FirstName} {leave.Employee.LastName}",
+
+            EmployeeRole =
+                leave.Employee?.Role?.RoleName,
+
             LeaveType = leave.LeaveType,
             Reason = leave.Reason,
             FromDate = leave.FromDate,

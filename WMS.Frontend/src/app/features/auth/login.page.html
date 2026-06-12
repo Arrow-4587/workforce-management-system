@@ -1,0 +1,53 @@
+<section class="auth-shell">
+      <div class="hero-panel">
+        <div class="hero-brand">
+          <div class="hero-brand-mark">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="2" width="9" height="9" rx="2.5" fill="white" fill-opacity="0.9"/>
+              <rect x="13" y="2" width="9" height="9" rx="2.5" fill="white" fill-opacity="0.5"/>
+              <rect x="2" y="13" width="9" height="9" rx="2.5" fill="white" fill-opacity="0.5"/>
+              <rect x="13" y="13" width="9" height="9" rx="2.5" fill="white" fill-opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="hero-brand-text">
+            <strong>Workforce Suite</strong>
+            <span>Enterprise Management</span>
+          </div>
+        </div>
+
+        <div class="hero-body">
+          <p class="eyebrow" style="color: rgba(255,255,255,0.55); margin-bottom: 20px;">One platform for HR operations</p>
+          <h1>Your workforce, fully under control.</h1>
+          <p class="hero-desc">Secure access, role-aware navigation, and clean operational dashboards for Admin, Manager, and Employee users.</p>
+          <div class="features">
+            <div class="feature"><span class="feature-dot"></span>Real-time attendance tracking</div>
+            <div class="feature"><span class="feature-dot"></span>Leave request & approval workflow</div>
+            <div class="feature"><span class="feature-dot"></span>Project allocation management</div>
+            <div class="feature"><span class="feature-dot"></span>Full audit trail & compliance</div>
+          </div>
+        </div>
+      </div>
+
+      <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+        <div>
+          <p class="eyebrow">Sign in</p>
+          <h2>Welcome back</h2>
+          <p class="subtitle">Use your WMS credentials to continue.</p>
+        </div>
+
+        <label>
+          <span>Username</span>
+          <input type="text" formControlName="username" autocomplete="username" placeholder="Enter your username" (input)="clearError()" />
+          <small *ngIf="form.controls.username.touched && form.controls.username.invalid">Username is required.</small>
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input type="password" formControlName="password" autocomplete="current-password" placeholder="Enter your password" (input)="clearError()" />
+          <small *ngIf="form.controls.password.touched && form.controls.password.invalid">Password is required.</small>
+          <small class="error field-error" *ngIf="errorMessage">{{ errorMessage }}</small>
+        </label>
+
+        <button type="submit" [disabled]="form.invalid || loading">{{ loading ? 'Signing in…' : 'Sign in to WMS' }}</button>
+      </form>
+    </section>

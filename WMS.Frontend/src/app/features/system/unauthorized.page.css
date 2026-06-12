@@ -1,0 +1,6 @@
+:host { display: grid; place-items: center; min-height: 100dvh; padding: 24px; }
+    .state-card { width: min(560px, 100%); padding: 36px; border-radius: 28px; background: var(--surface); box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .eyebrow { text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-size: 0.78rem; }
+    h1 { margin: 8px 0 12px; font-size: 2.2rem; }
+    p { color: var(--muted); }
+    a { display: inline-flex; margin-top: 18px; padding: 12px 18px; border-radius: 12px; background: var(--primary); color: #fff; }

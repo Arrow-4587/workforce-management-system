@@ -1,0 +1,151 @@
+<section class="page">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Leave management</p>
+          <h2>Leaves</h2>
+          <p class="subtitle">Apply, review, and resolve leave requests.</p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn btn--secondary" (click)="refresh()">
+            Refresh
+          </button>
+          <button *ngIf="auth.getUserRole() !== 'Admin'" type="button" class="btn btn--primary" (click)="openCreate()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Apply Leave
+          </button>
+        </div>
+      </header>
+
+      <div class="layout" [class.has-panel]="creating()">
+        
+        <div class="table-column">
+          <!-- My Leaves -->
+          <div class="table-card" *ngIf="auth.getUserRole() !== 'Admin'">
+            <div class="card-header">
+              <h3>My requests</h3>
+              <span class="badge badge--neutral">{{ myLeaves().length }}</span>
+            </div>
+
+            <div *ngIf="myLeaves().length; else noLeaves" class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of myLeaves()">
+                    <td>{{ item.leaveType }}</td>
+                    <td>{{ item.fromDate | date: 'mediumDate' }}</td>
+                    <td>{{ item.toDate | date: 'mediumDate' }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="statusBadge(item.status)">{{ item.status }}</span>
+                    </td>
+                    <td>
+                      <button *ngIf="item.status === 'Pending'" type="button" class="btn btn--danger btn--xs" (click)="cancelLeave(item.leaveId)">Cancel</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #noLeaves>
+              <div class="empty-state">No leave requests found.</div>
+            </ng-template>
+          </div>
+
+          <!-- Pending Approvals -->
+          <div class="table-card" *ngIf="isManager() || isAdmin()" [style.marginTop]="auth.getUserRole() === 'Manager' ? '24px' : '0'">
+            <div class="card-header">
+              <h3>Pending approvals</h3>
+              <span class="badge badge--pending">{{ pendingLeaves().length }}</span>
+            </div>
+
+            <div *ngIf="pendingLeaves().length; else noPending" class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Reason</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of pendingLeaves()">
+                    <td>
+                      <strong>{{ item.employeeName ?? 'Employee #' + item.empId }}</strong>
+                      <div style="font-size: 0.72rem; color: var(--muted); margin-top: 2px;">{{ item.employeeRole }}</div>
+                    </td>
+                    <td style="max-width: 200px; white-space: normal; overflow: hidden; text-overflow: ellipsis; font-size: 0.85rem; color: var(--muted);">{{ item.reason }}</td>
+                    <td>
+                      <div style="font-weight: 500;">{{ item.leaveType }}</div>
+                      <div style="font-size: 0.8rem; color: var(--muted);">{{ item.fromDate | date: 'MMM d, y' }}</div>
+                    </td>
+                    <td>{{ item.toDate | date: 'MMM d, y' }}</td>
+                    <td class="row-actions">
+                      <button type="button" class="btn btn--primary btn--xs" (click)="approve(item.leaveId)">Approve</button>
+                      <button type="button" class="btn btn--danger btn--xs" (click)="reject(item.leaveId)">Reject</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ng-template #noPending>
+              <div class="empty-state">No pending leaves awaiting review.</div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Editor Panel -->
+        <aside class="editor-panel" *ngIf="creating()">
+          <div class="editor-header">
+            <div>
+              <p class="eyebrow">Apply</p>
+              <h3>New request</h3>
+            </div>
+            <button class="close-btn" type="button" (click)="cancelCreate()">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2l14 14M16 2L2 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+
+          <form [formGroup]="form" (ngSubmit)="applyLeave()" class="form-grid">
+            <label class="field">
+              <span>Leave type</span>
+              <select formControlName="leaveType">
+                <option value="">Select</option>
+                <option value="Casual">Casual</option>
+                <option value="Sick">Sick</option>
+                <option value="Earned">Earned</option>
+                <option value="Unpaid">Unpaid</option>
+              </select>
+            </label>
+            <div class="form-row">
+              <label class="field">
+                <span>From date</span>
+                <input type="date" formControlName="fromDate" />
+              </label>
+              <label class="field">
+                <span>To date</span>
+                <input type="date" formControlName="toDate" />
+              </label>
+            </div>
+            <p class="error" *ngIf="form.errors?.['invalidDateRange']">To date must be on or after from date.</p>
+            <label class="field">
+              <span>Reason</span>
+              <textarea formControlName="reason" placeholder="Briefly describe why you are taking leave..."></textarea>
+            </label>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn--secondary" (click)="cancelCreate()">Cancel</button>
+              <button type="submit" class="btn btn--primary" [disabled]="form.invalid || loading()">Submit request</button>
+            </div>
+          </form>
+        </aside>
+
+      </div>
+    </section>

@@ -51,9 +51,10 @@ public class EmployeeProjectRepository
     {
         return await _context.EmployeeProjects
             .Include(ep => ep.Employee)
+            .Include(ep => ep.Project)
             .Where(ep =>
-                ep.ProjectId == projectId &&
-                ep.ReleasedOn == null)
+                ep.ProjectId == projectId)
+            .OrderByDescending(ep => ep.AllocatedOn)
             .ToListAsync();
     }
 
@@ -63,9 +64,13 @@ public class EmployeeProjectRepository
     {
         return await _context.EmployeeProjects
             .Include(ep => ep.Project)
+                .ThenInclude(p => p.Manager)
+            .Include(ep => ep.Project)
+                .ThenInclude(p => p.Client)
+            .Include(ep => ep.Employee)
             .Where(ep =>
-                ep.EmployeeId == employeeId &&
-                ep.ReleasedOn == null)
+                ep.EmployeeId == employeeId)
+            .OrderByDescending(ep => ep.AllocatedOn)
             .ToListAsync();
     }
     public async Task<EmployeeProject?>
@@ -106,5 +111,14 @@ public class EmployeeProjectRepository
             ep.EmployeeId)
         .Distinct()
         .ToListAsync();
-}
+    }
+
+    public async Task<List<EmployeeProject>> GetAllAsync()
+    {
+        return await _context.EmployeeProjects
+            .Include(ep => ep.Employee)
+            .Include(ep => ep.Project)
+            .OrderByDescending(ep => ep.AllocatedOn)
+            .ToListAsync();
+    }
 }

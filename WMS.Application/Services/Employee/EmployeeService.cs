@@ -1,4 +1,4 @@
-﻿using WMS.Application.DTOs.Employee;
+using WMS.Application.DTOs.Employee;
 using WMS.Domain.Interfaces;
 using EmployeeEntity = WMS.Domain.Entities.Employee;
 //using Microsoft.Extensions.Configuration;
@@ -13,6 +13,7 @@ public class EmployeeService : IEmployeeService
     private readonly IRoleRepository _roleRepository;
     private readonly IAuthRepository
     _authRepository;
+    private readonly IAuditLogRepository _auditLogRepository;
 
     //private readonly IConfiguration
     //    _configuration;
@@ -21,12 +22,14 @@ public class EmployeeService : IEmployeeService
        IEmployeeRepository employeeRepository,
        IDepartmentRepository departmentRepository,
        IRoleRepository roleRepository,
-       IAuthRepository authRepository)
+       IAuthRepository authRepository,
+       IAuditLogRepository auditLogRepository)
     {
         _employeeRepository = employeeRepository;
         _departmentRepository = departmentRepository;
         _roleRepository = roleRepository;
         _authRepository = authRepository;
+        _auditLogRepository = auditLogRepository;
         //_configuration = configuration;
     }
 
@@ -39,6 +42,11 @@ public class EmployeeService : IEmployeeService
             LastName = employee.LastName,
             Email = employee.Email,
             PhoneNumber = employee.PhoneNumber,
+            Gender = employee.Gender,
+            DOB = employee.DOB,
+            DOJ = employee.DOJ,
+            DepartmentId = employee.DepartmentId,
+            RoleId = employee.RoleId,
             DepartmentName = employee.Department?.DepartmentName ?? string.Empty,
             RoleName = employee.Role?.RoleName ?? string.Empty,
             Status = employee.Status
@@ -65,6 +73,7 @@ public class EmployeeService : IEmployeeService
     }
 
     public async Task<EmployeeResponseDto> CreateAsync(
+        int userId,
         CreateEmployeeDto dto)
     {
         var existingEmployee =
@@ -157,10 +166,20 @@ public class EmployeeService : IEmployeeService
         await _authRepository
             .AddAsync(userLogin);
 
+        await _auditLogRepository.AddAsync(new AuditLog
+        {
+            EntityName = "Employee",
+            RecordId = employee.EmployeeId,
+            Action = "Create",
+            CreatedBy = userId,
+            CreatedOn = DateTime.UtcNow
+        });
+
         return Map(employee);
     }
 
     public async Task UpdateAsync(
+        int userId,
         int employeeId,
         UpdateEmployeeDto dto)
     {
@@ -227,6 +246,14 @@ await _employeeRepository
 
         await _employeeRepository.UpdateAsync(employee);
 
+        await _auditLogRepository.AddAsync(new AuditLog
+        {
+            EntityName = "Employee",
+            RecordId = employee.EmployeeId,
+            Action = "Update",
+            CreatedBy = userId,
+            CreatedOn = DateTime.UtcNow
+        });
  
     }
 

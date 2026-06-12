@@ -7,7 +7,7 @@ namespace WMS.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Manager")]
+[Authorize]
 public class AllocationController : ControllerBase
 {
     private readonly IAllocationService
@@ -44,6 +44,7 @@ public class AllocationController : ControllerBase
     }
 
     [HttpGet("project/{projectId}")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<IActionResult>
         GetByProject(
             int projectId)
@@ -55,6 +56,7 @@ public class AllocationController : ControllerBase
     }
 
     [HttpGet("employee/{employeeId}")]
+    [Authorize(Roles = "Admin,Manager")]
     public async Task<IActionResult>
         GetByEmployee(
             int employeeId)

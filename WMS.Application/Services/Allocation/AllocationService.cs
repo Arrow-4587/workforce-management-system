@@ -173,6 +173,15 @@ public class AllocationService
                 allocation.Project?.ProjectName
                 ?? string.Empty,
 
+            ProjectManagerName =
+                allocation.Project?.Manager == null
+                ? string.Empty
+                : $"{allocation.Project.Manager.FirstName} {allocation.Project.Manager.LastName}",
+
+            ClientName =
+                allocation.Project?.Client?.ClientName
+                ?? string.Empty,
+
             AllocatedOn =
                 allocation.AllocatedOn,
 

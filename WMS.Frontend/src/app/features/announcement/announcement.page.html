@@ -1,0 +1,144 @@
+<section class="page">
+
+      <!-- ── Admin View: Full CRUD ── -->
+      <ng-container *ngIf="isAdmin()">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Communications</p>
+            <h2>Announcements</h2>
+            <p class="subtitle">Publish and manage company-wide announcements.</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn--primary" (click)="openCreate()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              New Announcement
+            </button>
+          </div>
+        </header>
+
+        <div class="layout" [class.has-panel]="editing()">
+          <div class="table-card">
+            <div *ngIf="loading()" class="skeleton-rows">
+              <div class="skeleton-row" *ngFor="let _ of [1,2,3]">
+                <div class="skeleton skeleton--text" style="width:40%"></div>
+                <div class="skeleton skeleton--text" style="width:20%"></div>
+              </div>
+            </div>
+            <div *ngIf="!loading() && !records().length" class="empty-state">
+              <div class="empty-state-icon">📢</div>
+              <div class="empty-state-title">No announcements yet</div>
+              <div class="empty-state-sub">Create the first announcement.</div>
+            </div>
+            <div *ngIf="!loading() && records().length" class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Author</th>
+                    <th>Published</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let a of records()">
+                    <td><strong>{{ a.title }}</strong></td>
+                    <td class="text-muted truncate">{{ a.message }}</td>
+                    <td class="text-muted">{{ a.creatorName ?? '—' }}</td>
+                    <td class="text-muted">{{ a.createdOn | date:'mediumDate' }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="a.isActive ? 'badge--active' : 'badge--neutral'">
+                        {{ a.isActive ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td class="row-actions">
+                      <button class="btn btn--ghost btn--xs" (click)="openEdit(a)">Edit</button>
+                      <button class="btn btn--danger btn--xs" (click)="remove(a)">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Editor Panel -->
+          <aside class="editor-panel" *ngIf="editing()">
+            <div class="editor-header">
+              <div>
+                <p class="eyebrow">{{ mode() === 'create' ? 'Create' : 'Edit' }} Announcement</p>
+                <h3>{{ mode() === 'create' ? 'New Message' : 'Edit Entry' }}</h3>
+              </div>
+              <button class="close-btn" (click)="cancelEdit()">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2l14 14M16 2L2 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+              <label class="field">
+                <span>Title <em class="req">*</em></span>
+                <input formControlName="title" placeholder="Announcement title…" />
+                <small *ngIf="isInvalid('title')">Title is required.</small>
+              </label>
+              <label class="field">
+                <span>Message <em class="req">*</em></span>
+                <textarea formControlName="message" rows="6" placeholder="Write the announcement content…"></textarea>
+                <small *ngIf="isInvalid('message')">Message is required.</small>
+              </label>
+              <label class="checkbox-field">
+                <input type="checkbox" formControlName="isActive" />
+                <span>Mark as Active (visible to all users)</span>
+              </label>
+              <div class="form-actions">
+                <button type="button" class="btn btn--secondary" (click)="cancelEdit()">Cancel</button>
+                <button type="submit" class="btn btn--primary" [disabled]="saving()">
+                  {{ saving() ? 'Saving…' : (mode() === 'create' ? 'Publish' : 'Update') }}
+                </button>
+              </div>
+            </form>
+          </aside>
+        </div>
+      </ng-container>
+
+      <!-- ── Non-Admin: Read-Only Card View ── -->
+      <ng-container *ngIf="!isAdmin()">
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">Communications</p>
+            <h2>Announcements</h2>
+            <p class="subtitle">Stay informed with the latest company news and updates.</p>
+          </div>
+        </header>
+
+        <div *ngIf="loading()" class="cards-grid">
+          <div class="announcement-skeleton" *ngFor="let _ of [1,2,3]">
+            <div class="skeleton skeleton--title" style="margin-bottom:12px"></div>
+            <div class="skeleton skeleton--text"></div>
+            <div class="skeleton skeleton--text" style="width:80%"></div>
+          </div>
+        </div>
+
+        <div *ngIf="!loading() && !activeAnnouncements().length" class="empty-state-card">
+          <div class="empty-state-icon">📢</div>
+          <div class="empty-state-title">No announcements</div>
+          <div class="empty-state-sub">There are no active announcements right now.</div>
+        </div>
+
+        <div class="cards-grid" *ngIf="!loading() && activeAnnouncements().length">
+          <article class="announcement-card" *ngFor="let a of activeAnnouncements()">
+            <div class="ann-header">
+              <span class="badge badge--active">Active</span>
+              <span class="ann-date">{{ a.createdOn | date:'mediumDate' }}</span>
+            </div>
+            <h3 class="ann-title">{{ a.title }}</h3>
+            <p class="ann-message">{{ a.message }}</p>
+            <div class="ann-footer" *ngIf="a.creatorName">
+              <span class="ann-author">
+                <span class="author-avatar">{{ a.creatorName[0] }}</span>
+                {{ a.creatorName }}
+              </span>
+            </div>
+          </article>
+        </div>
+      </ng-container>
+
+    </section>

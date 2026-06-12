@@ -1,0 +1,309 @@
+<section class="dashboard">
+
+      <!-- Loading skeleton -->
+      <div *ngIf="loading()" class="kpi-grid">
+        <div class="skeleton-card" *ngFor="let _ of [1,2,3,4]">
+          <div class="skeleton skeleton--title" style="width:40%;margin-bottom:12px"></div>
+          <div class="skeleton skeleton--text" style="width:60%;height:32px"></div>
+          <div class="skeleton skeleton--text" style="width:80%"></div>
+        </div>
+      </div>
+
+      <!-- ── Admin Dashboard ── -->
+      <ng-container *ngIf="!loading() && isAdmin() && adminData() as data">
+
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <p class="eyebrow">Admin Console</p>
+            <h2>Good {{ greeting() }}, {{ username() }} 👋</h2>
+            <p>Here's what's happening across the workforce today.</p>
+          </div>
+          <div class="welcome-actions">
+            <a routerLink="/employees" class="btn btn--primary">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Add Employee
+            </a>
+            <a routerLink="/leave" class="btn btn--secondary">Review Leaves</a>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <article class="kpi-card kpi-card--blue">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 11c2.209 0 4 1.791 4 4v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M14 5.5A4 4 0 0118 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Total Employees</span>
+              <strong class="kpi-value">{{ data.totalEmployees }}</strong>
+              <span class="kpi-hint">Active workforce on record</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--green">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 5h14M4 11h10M4 17h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Departments</span>
+              <strong class="kpi-value">{{ data.totalDepartments }}</strong>
+              <span class="kpi-hint">Organizational structure</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--purple">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="4" width="18" height="15" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v4M15 2v4M2 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Total Projects</span>
+              <strong class="kpi-value">{{ data.totalProjects }}</strong>
+              <span class="kpi-hint">Tracked project portfolio</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--amber">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M11 6v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Pending Leaves</span>
+              <strong class="kpi-value">{{ data.pendingLeaves }}</strong>
+              <span class="kpi-hint">Awaiting your review</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--teal">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 11l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Today's Attendance</span>
+              <strong class="kpi-value">{{ data.todayAttendance }}</strong>
+              <span class="kpi-hint">Check-ins recorded today</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links-section">
+          <h3 class="section-title">Quick Actions</h3>
+          <div class="quick-links">
+            <a routerLink="/employees" class="quick-link">
+              <span class="ql-icon ql-icon--blue">👥</span>
+              <span>Manage Employees</span>
+            </a>
+            <a routerLink="/departments" class="quick-link">
+              <span class="ql-icon ql-icon--green">🏢</span>
+              <span>Departments</span>
+            </a>
+            <a routerLink="/projects" class="quick-link">
+              <span class="ql-icon ql-icon--purple">📋</span>
+              <span>Projects</span>
+            </a>
+            <a routerLink="/leave" class="quick-link">
+              <span class="ql-icon ql-icon--amber">📅</span>
+              <span>Leave Requests</span>
+            </a>
+            <a routerLink="/audit-logs" class="quick-link">
+              <span class="ql-icon ql-icon--teal">🔍</span>
+              <span>Audit Logs</span>
+            </a>
+            <a routerLink="/announcements" class="quick-link">
+              <span class="ql-icon ql-icon--red">📢</span>
+              <span>Announcements</span>
+            </a>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <!-- ── Manager Dashboard ── -->
+      <ng-container *ngIf="!loading() && isManager() && managerData() as data">
+
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <p class="eyebrow">Manager Workspace</p>
+            <h2>Good {{ greeting() }}, {{ username() }} 👋</h2>
+            <p>Manage your team and keep track of pending approvals.</p>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <article class="kpi-card kpi-card--blue">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="4" width="18" height="15" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v4M15 2v4M2 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">My Projects</span>
+              <strong class="kpi-value">{{ data.myProjects }}</strong>
+              <span class="kpi-hint">Assigned to your team</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--green">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M2 20c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Allocated Employees</span>
+              <strong class="kpi-value">{{ data.allocatedEmployees }}</strong>
+              <span class="kpi-hint">Across your projects</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--amber">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M11 6v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Pending Leaves</span>
+              <strong class="kpi-value">{{ data.pendingLeaves }}</strong>
+              <span class="kpi-hint">Requires your action</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Pending Leaves Table -->
+        <div class="section-card" *ngIf="pendingLeaves().length">
+          <div class="section-header">
+            <h3 class="section-title">Pending Leave Requests</h3>
+            <a routerLink="/leave" class="btn btn--ghost btn--sm">View all</a>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Type</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Applied On</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let leave of pendingLeaves().slice(0, 5)">
+                  <td><strong>{{ leave.employeeName ?? 'Employee #' + leave.empId }}</strong></td>
+                  <td><span class="badge badge--neutral">{{ leave.leaveType }}</span></td>
+                  <td>{{ leave.fromDate | date:'mediumDate' }}</td>
+                  <td>{{ leave.toDate | date:'mediumDate' }}</td>
+                  <td>{{ leave.appliedOn | date:'mediumDate' }}</td>
+                  <td class="row-actions">
+                    <button class="btn btn--success btn--xs" (click)="approveLeave(leave.leaveId)">Approve</button>
+                    <button class="btn btn--danger btn--xs" (click)="rejectLeave(leave.leaveId)">Reject</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-card" *ngIf="!pendingLeaves().length && !loading()">
+          <div class="empty-state">
+            <div class="empty-state-icon">✅</div>
+            <div class="empty-state-title">All caught up!</div>
+            <div class="empty-state-sub">No pending leave requests to review.</div>
+          </div>
+        </div>
+
+        <div class="quick-links-section">
+          <h3 class="section-title">Quick Actions</h3>
+          <div class="quick-links">
+            <a routerLink="/employees" class="quick-link"><span class="ql-icon ql-icon--blue">👥</span><span>My Team</span></a>
+            <a routerLink="/projects" class="quick-link"><span class="ql-icon ql-icon--purple">📋</span><span>Projects</span></a>
+            <a routerLink="/allocations" class="quick-link"><span class="ql-icon ql-icon--green">🏷️</span><span>Allocations</span></a>
+            <a routerLink="/leave" class="quick-link"><span class="ql-icon ql-icon--amber">📅</span><span>Leave Approvals</span></a>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <!-- ── Employee Dashboard ── -->
+      <ng-container *ngIf="!loading() && isEmployee() && employeeData() as data">
+
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <p class="eyebrow">Employee Workspace</p>
+            <h2>Good {{ greeting() }}, {{ username() }} 👋</h2>
+            <p>Track your attendance, leave balance, and project assignments.</p>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <article class="kpi-card kpi-card--blue">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="2" y="4" width="18" height="15" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7 2v4M15 2v4M2 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">My Projects</span>
+              <strong class="kpi-value">{{ data.myProjects }}</strong>
+              <span class="kpi-hint">Current assignments</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--amber">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M11 6v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Pending Leaves</span>
+              <strong class="kpi-value">{{ data.myPendingLeaves }}</strong>
+              <span class="kpi-hint">Awaiting resolution</span>
+            </div>
+          </article>
+
+          <article class="kpi-card kpi-card--green">
+            <div class="kpi-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 11l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="kpi-content">
+              <span class="kpi-label">Attendance This Month</span>
+              <strong class="kpi-value">{{ data.attendanceThisMonth }}</strong>
+              <span class="kpi-hint">Check-in days recorded</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- My Attendance -->
+        <div class="section-card" *ngIf="myAttendance().length">
+          <div class="section-header">
+            <h3 class="section-title">Recent Attendance</h3>
+            <a routerLink="/attendance" class="btn btn--ghost btn--sm">View all</a>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Check In</th>
+                  <th>Check Out</th>
+                  <th>Hours</th>
+                  <th>Mode</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let rec of myAttendance().slice(0, 5)">
+                  <td>{{ rec.attendanceDate | date:'mediumDate' }}</td>
+                  <td>{{ rec.checkIn | date:'shortTime' }}</td>
+                  <td>{{ rec.checkOut ? (rec.checkOut | date:'shortTime') : '-' }}</td>
+                  <td>{{ rec.totalHours ?? '-' }}</td>
+                  <td><span class="badge" [ngClass]="workModeBadge(rec.workMode)">{{ rec.workMode }}</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="quick-links-section">
+          <h3 class="section-title">Quick Actions</h3>
+          <div class="quick-links">
+            <a routerLink="/attendance" class="quick-link"><span class="ql-icon ql-icon--green">✅</span><span>Check In/Out</span></a>
+            <a routerLink="/leave" class="quick-link"><span class="ql-icon ql-icon--amber">📅</span><span>Apply Leave</span></a>
+            <a routerLink="/announcements" class="quick-link"><span class="ql-icon ql-icon--blue">📢</span><span>Announcements</span></a>
+            <a routerLink="/profile" class="quick-link"><span class="ql-icon ql-icon--purple">👤</span><span>My Profile</span></a>
+          </div>
+        </div>
+
+      </ng-container>
+
+    </section>

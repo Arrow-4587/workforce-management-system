@@ -1,0 +1,36 @@
+:host { display: block; }
+    .page { display: grid; gap: 20px; }
+    
+    .page-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding: 24px 28px; border-radius: var(--radius-xl); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+    .page-header h2 { margin: 0 0 4px; font-size: 1.5rem; }
+    .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+
+    .table-card { border-radius: var(--radius-xl); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; padding: 24px; }
+    
+    .reports-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    
+    .report-card { 
+      display: flex; gap: 16px; align-items: center; padding: 20px; 
+      border: 2px solid var(--border); border-radius: var(--radius-lg); 
+      cursor: pointer; transition: all 0.2s ease; background: var(--bg);
+    }
+    .report-card:hover { border-color: var(--primary-light); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .report-card.active { border-color: var(--primary); background: var(--primary-xlight); }
+    
+    .report-icon { font-size: 2rem; }
+    .report-info { flex: 1; display: grid; gap: 4px; }
+    .report-info h3 { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .report-info p { margin: 0; font-size: 0.85rem; color: var(--muted); line-height: 1.4; }
+    
+    .check-placeholder { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border); }
+    
+    .btn { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: var(--radius-md); padding: 12px 20px; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: var(--transition); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn--primary { background: var(--primary); color: white; }
+    .btn--primary:hover:not(:disabled) { background: var(--primary-dark); }
+    
+    .spinner { animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) { .page-header { flex-direction: column; align-items: flex-start; } }

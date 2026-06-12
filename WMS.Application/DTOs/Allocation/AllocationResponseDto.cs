@@ -14,6 +14,12 @@ public class AllocationResponseDto
     public string ProjectName { get; set; }
         = string.Empty;
 
+    public string ProjectManagerName { get; set; }
+        = string.Empty;
+
+    public string ClientName { get; set; }
+        = string.Empty;
+
     public DateTime AllocatedOn { get; set; }
 
     public DateTime? ReleasedOn { get; set; }

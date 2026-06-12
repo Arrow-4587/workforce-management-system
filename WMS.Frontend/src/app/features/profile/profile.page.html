@@ -1,0 +1,167 @@
+<section class="page">
+
+      <!-- Page Header -->
+      <header class="page-header" *ngIf="profile() as p; else loadingHeader">
+        <div>
+          <p class="eyebrow">My Profile</p>
+          <h2>{{ p.firstName }} {{ p.lastName }}</h2>
+          <p class="subtitle">{{ p.roleName ?? p.role ?? auth.getUserRole() }} <span class="sep">·</span> {{ p.departmentName ?? p.department ?? '—' }}</p>
+        </div>
+        <div class="header-actions">
+          <div class="status-container">
+            <span class="status-dot" [class.active]="p.status === 'Active'"></span>
+            <span class="status-text">{{ p.status }}</span>
+          </div>
+          <div class="banner-avatar">{{ initials() }}</div>
+        </div>
+      </header>
+
+      <ng-template #loadingHeader>
+        <header class="page-header">
+          <div>
+            <p class="eyebrow">My Profile</p>
+            <div class="skeleton skeleton--title" style="width:200px;margin-bottom:8px"></div>
+            <div class="skeleton skeleton--text" style="width:300px"></div>
+          </div>
+          <div class="header-actions">
+            <div class="banner-avatar">{{ initials() }}</div>
+          </div>
+        </header>
+      </ng-template>
+
+      <div class="layout">
+        
+        <!-- Left Column: Details -->
+        <div class="table-column">
+          <div class="table-card" *ngIf="profile() as p">
+            <div class="card-header">
+              <h3>Account Details</h3>
+            </div>
+            <div class="card-body">
+              <dl class="detail-list">
+                <div class="detail-row">
+                  <dt>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 12c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+                    Username
+                  </dt>
+                  <dd>{{ p.username ?? auth.getUsername() ?? '—' }}</dd>
+                </div>
+                <div class="detail-row">
+                  <dt>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M1 5l6 4 6-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                    Email
+                  </dt>
+                  <dd>{{ p.email }}</dd>
+                </div>
+                <div class="detail-row">
+                  <dt>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2a1 1 0 011-1h2l1.5 3.5L5 5.5s.5 2.5 3.5 3.5l.5-2 3.5 1.5V10a1 1 0 01-1 1C5 11 2 6 2 2z" stroke="currentColor" stroke-width="1.4"/></svg>
+                    Phone
+                  </dt>
+                  <dd>{{ p.phoneNumber }}</dd>
+                </div>
+                <div class="detail-row">
+                  <dt>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M1 13c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                    Gender
+                  </dt>
+                  <dd>{{ p.gender === 'M' ? 'Male' : p.gender === 'F' ? 'Female' : p.gender }}</dd>
+                </div>
+                <div class="detail-row">
+                  <dt>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 1v3M9.5 1v3M1 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                    Date of Birth
+                  </dt>
+                  <dd>{{ p.dob | date:'mediumDate' }}</dd>
+                </div>
+                <div class="detail-row" style="border-bottom: 0;">
+                  <dt>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 1v3M9.5 1v3M1 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                    Date of Joining
+                  </dt>
+                  <dd>{{ p.doj | date:'mediumDate' }}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Editor Panel -->
+        <aside class="editor-panel">
+          
+          <ng-container *ngIf="!isRootAdmin()">
+            <div class="editor-header">
+              <div>
+                <p class="eyebrow">Edit Details</p>
+                <h3>Update Profile</h3>
+              </div>
+            </div>
+            
+            <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="form-grid">
+              <div class="form-row">
+                <label class="field">
+                  <span>First Name <em class="req">*</em></span>
+                  <input formControlName="firstName" placeholder="First name" />
+                  <small *ngIf="pfInvalid('firstName')">Required.</small>
+                </label>
+                <label class="field">
+                  <span>Last Name <em class="req">*</em></span>
+                  <input formControlName="lastName" placeholder="Last name" />
+                  <small *ngIf="pfInvalid('lastName')">Required.</small>
+                </label>
+              </div>
+              <label class="field">
+                <span>Email <em class="req">*</em></span>
+                <input type="email" formControlName="email" placeholder="email@company.com" />
+                <small *ngIf="pfInvalid('email')">Valid email required.</small>
+              </label>
+              <label class="field">
+                <span>Phone Number <em class="req">*</em></span>
+                <input formControlName="phoneNumber" placeholder="e.g. 9876543210" />
+                <small *ngIf="pfInvalid('phoneNumber')">10-15 digit phone required.</small>
+              </label>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn--primary" [disabled]="savingProfile()">
+                  {{ savingProfile() ? 'Saving…' : 'Save Changes' }}
+                </button>
+              </div>
+            </form>
+
+            <hr class="divider" />
+          </ng-container>
+
+          <div class="editor-header" [style.marginTop]="!isRootAdmin() ? '24px' : '0'">
+            <div>
+              <p class="eyebrow">Security</p>
+              <h3>Change Password</h3>
+            </div>
+          </div>
+
+          <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="form-grid">
+            <label class="field">
+              <span>Current Password <em class="req">*</em></span>
+              <input type="password" formControlName="currentPassword" placeholder="Enter current password" />
+              <small *ngIf="pwInvalid('currentPassword')">Required.</small>
+            </label>
+            <label class="field">
+              <span>New Password <em class="req">*</em></span>
+              <input type="password" formControlName="newPassword" placeholder="Min. 8 characters" />
+              <small *ngIf="pwInvalid('newPassword')">At least 8 characters required.</small>
+            </label>
+            <label class="field">
+              <span>Confirm New Password <em class="req">*</em></span>
+              <input type="password" formControlName="confirmPassword" placeholder="Repeat new password" />
+              <small *ngIf="passwordMismatch()">Passwords do not match.</small>
+            </label>
+            
+            <div class="form-actions">
+              <button type="submit" class="btn btn--primary" [disabled]="savingPassword()">
+                {{ savingPassword() ? 'Updating…' : 'Update Password' }}
+              </button>
+            </div>
+          </form>
+
+        </aside>
+      </div>
+    </section>

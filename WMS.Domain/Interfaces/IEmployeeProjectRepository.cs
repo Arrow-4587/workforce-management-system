@@ -33,4 +33,6 @@ public interface IEmployeeProjectRepository
         Task<List<int>>
     GetEmployeeIdsByManagerAsync(
         int managerId);
+
+    Task<List<EmployeeProject>> GetAllAsync();
 }

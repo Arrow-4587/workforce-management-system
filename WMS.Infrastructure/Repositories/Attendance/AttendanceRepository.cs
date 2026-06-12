@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WMS.Domain.Entities;
 using WMS.Domain.Interfaces;
 using WMS.Infrastructure.Data;
@@ -95,5 +95,13 @@ GetTodayAttendanceCountAsync()
                 a.EmpId == employeeId &&
                 a.AttendanceDate.Year == year &&
                 a.AttendanceDate.Month == month);
+    }
+
+    public async Task<List<Attendance>> GetAllAsync()
+    {
+        return await _context.Attendances
+            .Include(a => a.Employee)
+            .OrderByDescending(a => a.AttendanceDate)
+            .ToListAsync();
     }
 }

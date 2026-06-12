@@ -22,11 +22,13 @@ public interface ILeaveService
 
     Task ApproveLeaveAsync(
         int leaveId,
-        int managerId);
+        int? managerId,
+        int userId);
 
     Task RejectLeaveAsync(
         int leaveId,
-        int managerId);
+        int? managerId,
+        int userId);
         Task<List<LeaveResponseDto>>
     GetPendingLeavesForManagerAsync(
         int managerId);

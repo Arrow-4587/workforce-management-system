@@ -1,7 +1,8 @@
-﻿
+
 using BCrypt.Net;
 using WMS.Application.DTOs.Profile;
 using WMS.Domain.Interfaces;
+using WMS.Application.DTOs.Auth;
 
 namespace WMS.Application.Services.Profile;
 
@@ -35,8 +36,26 @@ public class ProfileService
 
         if (employee == null)
         {
-            throw new Exception(
-                "Profile not found.");
+            var user = await _authRepository.GetByUserIdAsync(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            return new ProfileResponseDto
+            {
+                EmployeeId = 0,
+                FirstName = "System",
+                LastName = "Administrator",
+                Email = "admin@system.local",
+                PhoneNumber = "N/A",
+                Gender = 'O',
+                DOB = DateTime.UtcNow.Date,
+                DOJ = DateTime.UtcNow.Date,
+                Department = "System Administration",
+                Role = user.Role?.RoleName ?? "Admin",
+                Username = user.Username
+            };
         }
 
         return new ProfileResponseDto
@@ -90,7 +109,7 @@ public class ProfileService
         if (employee == null)
         {
             throw new Exception(
-                "Profile not found.");
+                "The system administrator profile cannot be edited.");
         }
 
         employee.FirstName =

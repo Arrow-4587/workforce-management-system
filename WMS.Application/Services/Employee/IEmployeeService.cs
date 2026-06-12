@@ -1,4 +1,4 @@
-﻿using WMS.Application.DTOs.Employee;
+using WMS.Application.DTOs.Employee;
 
 namespace WMS.Application.Services.Employee;
 
@@ -8,9 +8,9 @@ public interface IEmployeeService
 
     Task<EmployeeResponseDto?> GetByIdAsync(int employeeId);
 
-    Task<EmployeeResponseDto> CreateAsync(CreateEmployeeDto dto);
+    Task<EmployeeResponseDto> CreateAsync(int userId, CreateEmployeeDto dto);
 
-    Task UpdateAsync(int employeeId, UpdateEmployeeDto dto);
+    Task UpdateAsync(int userId, int employeeId, UpdateEmployeeDto dto);
 
     Task DeleteAsync(int employeeId);
 
