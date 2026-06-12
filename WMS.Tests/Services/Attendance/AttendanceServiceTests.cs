@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using WMS.Application.DTOs.Attendance;
 using WMS.Application.Services.Attendance;
 using WMS.Domain.Interfaces;
@@ -45,7 +45,7 @@ public class AttendanceServiceTests
 
         var dto = new CheckInDto
         {
-            WorkMode = "WFH"
+            WorkMode = "Remote"
         };
 
         var result =
@@ -57,7 +57,7 @@ public class AttendanceServiceTests
         Assert.NotNull(result);
 
         Assert.Equal(
-            "WFH",
+            "Remote",
             result.WorkMode);
 
         _attendanceRepositoryMock.Verify(
@@ -82,7 +82,7 @@ public class AttendanceServiceTests
 
         var dto = new CheckInDto
         {
-            WorkMode = "WFH"
+            WorkMode = "Remote"
         };
 
         var ex =
@@ -109,7 +109,7 @@ public class AttendanceServiceTests
 
         var dto = new CheckInDto
         {
-            WorkMode = "Office"
+            WorkMode = "Invalid"
         };
 
         var ex =
@@ -121,7 +121,7 @@ public class AttendanceServiceTests
                             dto));
 
         Assert.Equal(
-            "WorkMode must be WFH, WFO or Hybrid.",
+            "WorkMode must be Remote, Office or Hybrid.",
             ex.Message);
     }
 
