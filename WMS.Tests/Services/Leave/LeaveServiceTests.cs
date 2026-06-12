@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using WMS.Application.DTOs.Leave;
 using WMS.Application.Services.Leave;
 using WMS.Domain.Entities;
@@ -184,6 +184,7 @@ public class LeaveServiceTests
         var ex = await Assert.ThrowsAsync<Exception>(
             () => _leaveService.ApproveLeaveAsync(
                 1,
+                99,
                 99));
 
         Assert.Equal(
@@ -215,6 +216,7 @@ public class LeaveServiceTests
         // Act
         await _leaveService.ApproveLeaveAsync(
             1,
+            99,
             99);
 
         // Assert
@@ -257,6 +259,7 @@ public class LeaveServiceTests
         // Act
         await _leaveService.RejectLeaveAsync(
             1,
+            99,
             99);
 
         // Assert
