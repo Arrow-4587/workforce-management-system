@@ -1,0 +1,147 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+
+# ===========================
+# BUILD BACKEND
+# ===========================
+
+- stage: BuildBackend
+  displayName: Build Backend
+
+  jobs:
+
+  - job: BuildAPI
+
+    steps:
+
+    - task: UseDotNet@2
+      inputs:
+        packageType: sdk
+        version: '8.0.x'
+
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: 'WMS-Solution.sln'
+
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: 'WMS-Solution.sln'
+        arguments: '--configuration $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: 'WMS.Tests/WMS.Tests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+
+    - task: DotNetCoreCLI@2
+      displayName: Publish API
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: 'WMS.API/WMS.API.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
+        ArtifactName: api
+
+
+# ===========================
+# BUILD FRONTEND
+# ===========================
+
+- stage: BuildFrontend
+
+  displayName: Build Frontend
+
+  jobs:
+
+  - job: AngularBuild
+
+    steps:
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+
+    - script: |
+        cd WMS.Frontend
+        npm install
+        npm run build -- --configuration production
+      displayName: Build Angular
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'WMS.Frontend/dist'
+        ArtifactName: frontend
+
+
+# ===========================
+# DEPLOY API
+# ===========================
+
+- stage: DeployBackend
+
+  dependsOn: BuildBackend
+
+  jobs:
+
+  - deployment: DeployAPI
+
+    environment: Production
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - download: current
+            artifact: api
+
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'Azure-ServiceConnection'
+              appType: webApp
+              appName: 'wms-api-indresh-2026'
+              package: '$(Pipeline.Workspace)/api'
+
+
+# ===========================
+# DEPLOY ANGULAR
+# ===========================
+
+- stage: DeployFrontend
+
+  dependsOn: BuildFrontend
+
+  jobs:
+
+  - job: DeployStatic
+
+    steps:
+
+    - download: current
+      artifact: frontend
+
+    - task: AzureStaticWebApp@0
+      inputs:
+        app_location: ''
+        output_location: ''
+        skip_app_build: true
+        azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
