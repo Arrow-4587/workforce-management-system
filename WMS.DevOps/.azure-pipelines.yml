@@ -5,7 +5,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
+- name: buildConfiguration
+  value: 'Release'
 
 stages:
 
@@ -28,9 +29,6 @@ stages:
       inputs:
         packageType: 'sdk'
         version: '8.0.x'
-
-    - script: dotnet --info
-      displayName: Verify .NET SDK
 
     - task: DotNetCoreCLI@2
       displayName: Restore API
@@ -74,10 +72,9 @@ stages:
 
     steps:
 
-    - task: NodeTool@0
-      displayName: Install Node.js
+    - task: UseNode@1
       inputs:
-        versionSpec: '20.x'
+        version: '20.x'
 
     - script: |
         cd WMS.Frontend
@@ -89,8 +86,36 @@ stages:
         npm run build -- --configuration production
       displayName: Build Angular
 
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Frontend Artifact
-      inputs:
-        PathtoPublish: 'WMS.Frontend/dist'
-        ArtifactName: 'frontend'
+# ==========================================
+# DEPLOY BACKEND
+# ==========================================
+
+- stage: DeployBackend
+  displayName: Deploy Backend
+  dependsOn:
+    - BuildBackend
+    - BuildFrontend
+
+  jobs:
+
+  - deployment: DeployAPI
+
+    environment: Production
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          - download: current
+            artifact: api
+
+          - task: AzureWebApp@1
+            displayName: Deploy API to Azure
+
+            inputs:
+              azureSubscription: 'Azure-ServiceConnection'
+              appType: 'webApp'
+              appName: 'wms-api-indresh-2026'
+              package: '$(Pipeline.Workspace)/api'
