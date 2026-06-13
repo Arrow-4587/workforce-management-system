@@ -1,58 +1,12 @@
-trigger:
-- main
+- task: DotNetCoreCLI@2
+  displayName: Restore API
+  inputs:
+    command: restore
+    projects: 'WMS.API/WMS.API.csproj'
 
-pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  buildConfiguration: 'Release'
-
-stages:
-
-- stage: BuildBackend
-  displayName: Build Backend
-
-  jobs:
-  - job: BuildAPI
-
-    steps:
-
-    - task: UseDotNet@2
-      displayName: Install .NET 8
-      inputs:
-        packageType: sdk
-        version: '8.0.x'
-
-    - script: dotnet --version
-      displayName: Verify .NET
-
-    - task: DotNetCoreCLI@2
-      displayName: Restore Solution
-      inputs:
-        command: restore
-        projects: '**/*.slnx'
-
-    - task: DotNetCoreCLI@2
-      displayName: Build Solution
-      inputs:
-        command: build
-        projects: '**/*.slnx'
-        arguments: '--configuration $(buildConfiguration)'
-
-- stage: BuildFrontend
-  displayName: Build Frontend
-
-  jobs:
-  - job: AngularBuild
-
-    steps:
-
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '20.x'
-
-    - script: |
-        cd WMS.Frontend
-        npm install
-        npm run build -- --configuration production
-      displayName: Build Angular
+- task: DotNetCoreCLI@2
+  displayName: Build API
+  inputs:
+    command: build
+    projects: 'WMS.API/WMS.API.csproj'
+    arguments: '--configuration $(buildConfiguration)'
