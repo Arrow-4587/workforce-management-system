@@ -10,7 +10,7 @@ variables:
 stages:
 
 # =====================================================
-# BUILD & TEST BACKEND
+# BUILD BACKEND
 # =====================================================
 
 - stage: BuildBackend
@@ -42,7 +42,7 @@ stages:
         projects: 'WMS.API/WMS.API.csproj'
         arguments: '--configuration $(buildConfiguration)'
 
-    # Uncomment when you add test projects
+    # Uncomment later when test projects exist
     #
     # - task: DotNetCoreCLI@2
     #   displayName: 'Run Tests'
@@ -59,19 +59,10 @@ stages:
         projects: 'WMS.API/WMS.API.csproj'
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
 
-    - task: ArchiveFiles@2
-      displayName: 'Create Deployment ZIP'
-      inputs:
-        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/api'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/api.zip'
-        replaceExistingArchive: true
-
     - task: PublishBuildArtifacts@1
       displayName: 'Publish API Artifact'
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/api.zip'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
         ArtifactName: 'api'
 
 # =====================================================
@@ -85,30 +76,18 @@ stages:
 
   jobs:
 
-  - deployment: DeployAPI
-    displayName: 'Deploy API to Azure App Service'
-    environment: 'Production'
+  - job: DeployAPI
+    displayName: 'Deploy API to Azure'
 
-    strategy:
-      runOnce:
-        deploy:
+    steps:
 
-          steps:
+    - download: current
+      artifact: api
 
-          - download: current
-            artifact: api
-
-          - task: AzureWebApp@1
-            displayName: 'Deploy to Existing App Service'
-            inputs:
-              azureSubscription: 'Azure-ServiceConnection'
-              appType: 'webApp'
-              appName: 'wms-api-indresh-2026'
-              package: '$(Pipeline.Workspace)/api/api.zip'
-
-          # Optional health check
-          # Replace URL with your actual API endpoint
-          #
-          # - script: |
-          #     curl -I https://your-api-url.azurewebsites.net/swagger
-          #   displayName: 'Verify Deployment'
+    - task: AzureWebApp@1
+      displayName: 'Deploy API to Azure App Service'
+      inputs:
+        azureSubscription: 'Azure-ServiceConnection'
+        appType: 'webApp'
+        appName: 'wms-api-indresh-2026'
+        package: '$(Pipeline.Workspace)/api'
