@@ -39,7 +39,6 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IAttendanceRepository,AttendanceRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IAttendanceService,AttendanceService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ILeaveRepository,LeaveRepository>();
@@ -129,18 +128,24 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-//using (var scope = app.Services.CreateScope())
-//{
-//    var context =
-//        scope.ServiceProvider.GetRequiredService<WmsDbContext>();
+try
+{
+    using var scope = app.Services.CreateScope();
 
-//    await DbSeeder.SeedAdminAsync(context);
-//}
+    var context =
+        scope.ServiceProvider.GetRequiredService<WmsDbContext>();
+
+    await DbSeeder.SeedAdminAsync(context);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Seeder failed: {ex}");
+}
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 
