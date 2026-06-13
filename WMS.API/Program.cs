@@ -59,6 +59,16 @@ builder.Services.AddScoped<IRoleService,RoleService>();
 builder.Services.AddScoped<IProfileService,ProfileService>();
 builder.Services.AddScoped<IReportService,ReportService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AngularPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -128,13 +138,14 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
+app.UseCors("AngularPolicy");
 
 app.UseAuthentication();
 
