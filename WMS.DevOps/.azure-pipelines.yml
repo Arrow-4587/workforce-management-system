@@ -77,17 +77,20 @@ stages:
   jobs:
 
   - job: DeployAPI
-    displayName: 'Deploy API to Azure'
+    displayName: 'Deploy API using MSDeploy'
 
     steps:
 
     - download: current
       artifact: api
 
-    - task: AzureWebApp@1
-      displayName: 'Deploy API to Azure App Service'
+    - task: AzureRmWebAppDeployment@4
+      displayName: 'Deploy via MSDeploy'
       inputs:
+        ConnectionType: 'AzureRM'
         azureSubscription: 'Azure-ServiceConnection'
         appType: 'webApp'
-        appName: 'wms-api-indresh-2026'
-        package: '$(Pipeline.Workspace)/api'
+        WebAppName: 'wms-api-indresh-2026'
+        packageForLinux: '$(Pipeline.Workspace)/api'
+        enableCustomDeployment: true
+        DeploymentType: 'webDeploy'
