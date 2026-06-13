@@ -10,41 +10,41 @@ variables:
 
 stages:
 
-# ==========================================
+# =====================================================
 # BUILD BACKEND
-# ==========================================
+# =====================================================
 
 - stage: BuildBackend
-  displayName: Build Backend
+  displayName: 'Build Backend'
 
   jobs:
 
   - job: BuildAPI
-    displayName: Build ASP.NET Core API
+    displayName: 'Build ASP.NET Core API'
 
     steps:
 
     - task: UseDotNet@2
-      displayName: Install .NET 8 SDK
+      displayName: 'Install .NET 8 SDK'
       inputs:
         packageType: 'sdk'
         version: '8.0.x'
 
     - task: DotNetCoreCLI@2
-      displayName: Restore API
+      displayName: 'Restore API'
       inputs:
         command: 'restore'
         projects: 'WMS.API/WMS.API.csproj'
 
     - task: DotNetCoreCLI@2
-      displayName: Build API
+      displayName: 'Build API'
       inputs:
         command: 'build'
         projects: 'WMS.API/WMS.API.csproj'
         arguments: '--configuration $(buildConfiguration)'
 
     - task: DotNetCoreCLI@2
-      displayName: Publish API
+      displayName: 'Publish API'
       inputs:
         command: 'publish'
         publishWebProjects: false
@@ -52,70 +52,73 @@ stages:
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
 
     - task: PublishBuildArtifacts@1
-      displayName: Publish API Artifact
+      displayName: 'Publish API Artifact'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
         ArtifactName: 'api'
 
-# ==========================================
+
+# =====================================================
 # BUILD FRONTEND
-# ==========================================
+# =====================================================
 
 - stage: BuildFrontend
-  displayName: Build Frontend
+  displayName: 'Build Frontend'
   dependsOn: BuildBackend
 
   jobs:
 
   - job: AngularBuild
-    displayName: Build Angular
+    displayName: 'Build Angular'
 
     steps:
 
     - task: UseNode@1
+      displayName: 'Install Node.js'
       inputs:
         version: '20.x'
 
     - script: |
         cd WMS.Frontend
         npm install
-      displayName: Install NPM Packages
+      displayName: 'Install NPM Packages'
 
     - script: |
         cd WMS.Frontend
         npm run build -- --configuration production
-      displayName: Build Angular
+      displayName: 'Build Angular'
 
-# ==========================================
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Frontend Artifact'
+      inputs:
+        PathtoPublish: 'WMS.Frontend/dist'
+        ArtifactName: 'frontend'
+
+
+# =====================================================
 # DEPLOY BACKEND
-# ==========================================
+# =====================================================
 
 - stage: DeployBackend
-  displayName: Deploy Backend
+  displayName: 'Deploy Backend'
   dependsOn:
     - BuildBackend
     - BuildFrontend
 
   jobs:
 
-  - deployment: DeployAPI
+  - job: DeployAPI
+    displayName: 'Deploy API to Azure'
 
-    environment: Production
+    steps:
 
-    strategy:
-      runOnce:
-        deploy:
+    - download: current
+      artifact: api
 
-          steps:
-
-          - download: current
-            artifact: api
-
-          - task: AzureWebApp@1
-            displayName: Deploy API to Azure
-
-            inputs:
-              azureSubscription: 'Azure-ServiceConnection'
-              appType: 'webApp'
-              appName: 'wms-api-indresh-2026'
-              package: '$(Pipeline.Workspace)/api'
+    - task: AzureWebApp@1
+      displayName: 'Deploy API to Azure App Service'
+      inputs:
+        azureSubscription: 'Azure-ServiceConnection'
+        appType: 'webApp'
+        appName: 'wms-api-indresh-2026'
+        package: '$(Pipeline.Workspace)/api'
