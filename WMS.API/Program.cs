@@ -158,4 +158,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/pipeline-test", () =>
+{
+    return Results.Ok("WMS Pipeline Deployment Successful");
+});
+
 app.Run();
